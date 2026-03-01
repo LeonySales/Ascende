@@ -140,9 +140,12 @@ async function startServer() {
       'http://localhost:5173',
       'http://127.0.0.1:5173',
       'https://appdesignerpro.site',
-      'http://appdesignerpro.site'
+      'http://appdesignerpro.site',
+      'https://ascende-omega.vercel.app'
     ],
-    credentials: true
+    credentials: true,
+    methods: ['GET', 'POST', 'PATCH', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization']
   }));
 
   app.use(express.json({ limit: '10kb' })); // Limit body size for security
