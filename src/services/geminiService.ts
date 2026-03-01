@@ -1,5 +1,6 @@
 // Esta função será usada apenas para os tipos
 import { GoogleGenAI, Type } from "@google/genai";
+import { API_URL } from '../config';
 
 // Esta função será usada apenas para os tipos
 // const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY || "" });
@@ -80,23 +81,23 @@ export interface Roadmap {
 }
 
 export async function analyzeIdea(idea: string, context: IdeaContext): Promise<Analysis> {
-  const response = await fetch('/api/analyze-idea', {
+  const response = await fetch(`${API_URL}/api/analyze-idea`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ idea, context })
   });
-  
+
   if (!response.ok) {
     const errorText = await response.text();
     console.error('Error analyzing idea:', errorText);
     throw new Error(`Failed to analyze idea: ${response.status} - ${errorText}`);
   }
-  
+
   const responseText = await response.text();
   if (!responseText) {
     throw new Error('Empty response from server');
   }
-  
+
   try {
     return JSON.parse(responseText);
   } catch (parseError) {
@@ -106,23 +107,23 @@ export async function analyzeIdea(idea: string, context: IdeaContext): Promise<A
 }
 
 export async function generateRoadmap(idea: string, context: IdeaContext, analysis: Analysis): Promise<Roadmap> {
-  const response = await fetch('/api/generate-roadmap', {
+  const response = await fetch(`${API_URL}/api/generate-roadmap`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ idea, context, analysis })
   });
-  
+
   if (!response.ok) {
     const errorText = await response.text();
     console.error('Error generating roadmap:', errorText);
     throw new Error(`Failed to generate roadmap: ${response.status} - ${errorText}`);
   }
-  
+
   const responseText = await response.text();
   if (!responseText) {
     throw new Error('Empty response from server');
   }
-  
+
   try {
     return JSON.parse(responseText);
   } catch (parseError) {
@@ -132,23 +133,23 @@ export async function generateRoadmap(idea: string, context: IdeaContext, analys
 }
 
 export async function generateCopy(project: any): Promise<string> {
-  const response = await fetch('/api/generate-copy', {
+  const response = await fetch(`${API_URL}/api/generate-copy`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ idea: project.idea, analysis: project.analysis })
   });
-  
+
   if (!response.ok) {
     const errorText = await response.text();
     console.error('Error generating copy:', errorText);
     throw new Error(`Failed to generate copy: ${response.status} - ${errorText}`);
   }
-  
+
   const responseText = await response.text();
   if (!responseText) {
     throw new Error('Empty response from server');
   }
-  
+
   try {
     const result = JSON.parse(responseText);
     return result.copy || "";
@@ -159,23 +160,23 @@ export async function generateCopy(project: any): Promise<string> {
 }
 
 export async function generateAds(project: any): Promise<string> {
-  const response = await fetch('/api/generate-ads', {
+  const response = await fetch(`${API_URL}/api/generate-ads`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ idea: project.idea, analysis: project.analysis })
   });
-  
+
   if (!response.ok) {
     const errorText = await response.text();
     console.error('Error generating ads:', errorText);
     throw new Error(`Failed to generate ads: ${response.status} - ${errorText}`);
   }
-  
+
   const responseText = await response.text();
   if (!responseText) {
     throw new Error('Empty response from server');
   }
-  
+
   try {
     const result = JSON.parse(responseText);
     return result.ads || "";
@@ -186,23 +187,23 @@ export async function generateAds(project: any): Promise<string> {
 }
 
 export async function analyzeMetaAds(adData: string, useApi: boolean): Promise<string> {
-  const response = await fetch('/api/meta-ads-analysis', {
+  const response = await fetch(`${API_URL}/api/meta-ads-analysis`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ adData, useApi })
   });
-  
+
   if (!response.ok) {
     const errorText = await response.text();
     console.error('Error analyzing Meta ads:', errorText);
     throw new Error(`Failed to analyze Meta ads: ${response.status} - ${errorText}`);
   }
-  
+
   const responseText = await response.text();
   if (!responseText) {
     throw new Error('Empty response from server');
   }
-  
+
   try {
     const result = JSON.parse(responseText);
     return result.analysis || "";

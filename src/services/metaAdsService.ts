@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
+import { API_URL } from '../config';
 
 export interface MetaConnection {
   id: string;
@@ -52,13 +53,13 @@ export interface MetaConnectionStatus {
 
 // Redirect to OAuth
 export const connectMetaAds = (userEmail: string) => {
-  window.location.href = `/api/auth/meta?user_email=${encodeURIComponent(userEmail)}`;
+  window.location.href = `${API_URL}/api/auth/meta?user_email=${encodeURIComponent(userEmail)}`;
 };
 
 // Check connection status
 export const getMetaConnectionStatus = async (userEmail: string): Promise<MetaConnectionStatus> => {
   try {
-    const response = await fetch(`/api/meta/connection-status?user_email=${encodeURIComponent(userEmail)}`);
+    const response = await fetch(`${API_URL}/api/meta/connection-status?user_email=${encodeURIComponent(userEmail)}`);
     if (!response.ok) {
       if (response.status === 404) return { isConnected: false };
       throw new Error(`Failed to get connection status: ${response.status}`);
@@ -79,7 +80,7 @@ export const getMetaConnectionStatus = async (userEmail: string): Promise<MetaCo
 // Sync Meta campaigns
 export const syncMetaCampaigns = async (userEmail: string): Promise<boolean> => {
   try {
-    const response = await fetch('/api/meta/sync', {
+    const response = await fetch(`${API_URL}/api/meta/sync`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ user_email: userEmail })
@@ -97,7 +98,7 @@ export const syncMetaCampaigns = async (userEmail: string): Promise<boolean> => 
 // Get Meta analysis
 export const getMetaAnalysis = async (userEmail: string): Promise<MetaAnalysis | null> => {
   try {
-    const response = await fetch(`/api/meta/analysis?user_email=${encodeURIComponent(userEmail)}`);
+    const response = await fetch(`${API_URL}/api/meta/analysis?user_email=${encodeURIComponent(userEmail)}`);
     if (!response.ok) {
       if (response.status === 404) return null;
       throw new Error(`Failed to get analysis: ${response.status}`);

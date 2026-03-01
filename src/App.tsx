@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
+import { API_URL } from './config';
 import { motion, AnimatePresence } from 'motion/react';
 import {
   Lightbulb,
@@ -209,9 +210,9 @@ export default function App() {
     }
   }, [darkMode]);
 
-  const fetchProjects = async (email: string) => {
+  const fetchProjects = useCallback(async (email: string) => {
     try {
-      const res = await fetch(`/api/projects?email=${email}`);
+      const res = await fetch(`${API_URL}/api/projects?email=${email}`);
       if (!res.ok) {
         console.error("Failed to fetch projects:", res.status);
         return;
@@ -231,7 +232,7 @@ export default function App() {
     } catch (err) {
       console.error("Failed to fetch projects", err);
     }
-  };
+  }, [activeProject]);
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
@@ -248,7 +249,7 @@ export default function App() {
     setStep('login');
   };
 
-  const handleStartAnalysis = async () => {
+  const handleStartAnalysis = useCallback(async () => {
     setStep('loading');
     try {
       setLoadingMessage('O mentor está analisando o mercado...');
@@ -266,7 +267,7 @@ export default function App() {
         status: 'Em execução',
         created_at: new Date().toISOString()
       };
-      await fetch('/api/projects', {
+      await fetch(`${API_URL}/api/projects`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(newProject)
@@ -279,11 +280,11 @@ export default function App() {
       setStep('input');
       alert("Ocorreu um erro na análise. Tente novamente.");
     }
-  };
+  }, [idea, context, userEmail, fetchProjects]);
 
   const updateStatus = async (id: string, status: string) => {
     try {
-      await fetch(`/api/projects/${id}/status`, {
+      await fetch(`${API_URL}/api/projects/${id}/status`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ status })
@@ -322,7 +323,7 @@ export default function App() {
     const updated = { ...activeProject, completed_tasks: newCompleted };
     setActiveProject(updated);
     try {
-      await fetch(`/api/projects/${activeProject.id}/tasks`, {
+      await fetch(`${API_URL}/api/projects/${activeProject.id}/tasks`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ completed_tasks: newCompleted })
@@ -932,8 +933,8 @@ ${daysText}`;
                   <div className="flex justify-between items-start">
                     <h3 className="font-bold dark:text-white line-clamp-2">{project.idea}</h3>
                     <span className={`px-2 py-1 rounded-full text-xs font-bold flex-shrink-0 ml-2 ${project.status === 'Em execução' ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-400' :
-                        project.status === 'Pausada' ? 'bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-400' :
-                          'bg-zinc-100 text-zinc-800 dark:bg-zinc-800 dark:text-zinc-400'
+                      project.status === 'Pausada' ? 'bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-400' :
+                        'bg-zinc-100 text-zinc-800 dark:bg-zinc-800 dark:text-zinc-400'
                       }`}>
                       {project.status}
                     </span>

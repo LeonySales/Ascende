@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { API_URL } from '../../config';
 import { Loader2, ArrowLeft } from 'lucide-react';
 import { motion } from 'motion/react';
 import MetaAdsConnection from './MetaAdsConnection';
@@ -67,7 +68,7 @@ export default function MetaAdsPage({ userEmail, onBack }: MetaAdsPageProps) {
 
   const fetchCampaigns = async () => {
     try {
-      const response = await fetch(`/api/meta/campaigns?user_email=${encodeURIComponent(userEmail)}`);
+      const response = await fetch(`${API_URL}/api/meta/campaigns?user_email=${encodeURIComponent(userEmail)}`);
       if (response.ok) {
         const data = await response.json();
         setCampaigns(data);
@@ -79,7 +80,7 @@ export default function MetaAdsPage({ userEmail, onBack }: MetaAdsPageProps) {
 
   const fetchAnalysis = async () => {
     try {
-      const response = await fetch(`/api/meta/analysis?user_email=${encodeURIComponent(userEmail)}`);
+      const response = await fetch(`${API_URL}/api/meta/analysis?user_email=${encodeURIComponent(userEmail)}`);
       if (response.ok) {
         const data = await response.json();
         setAnalysis(data);
@@ -166,8 +167,8 @@ export default function MetaAdsPage({ userEmail, onBack }: MetaAdsPageProps) {
           <button
             key={tab}
             className={`pb-3 px-4 font-medium capitalize transition-colors ${activeTab === tab
-                ? 'text-indigo-600 dark:text-indigo-400 border-b-2 border-indigo-600 dark:border-indigo-400'
-                : 'text-zinc-500 dark:text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-300'
+              ? 'text-indigo-600 dark:text-indigo-400 border-b-2 border-indigo-600 dark:border-indigo-400'
+              : 'text-zinc-500 dark:text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-300'
               } ${tab !== 'connection' && !connectionStatus.isConnected ? 'opacity-40 cursor-not-allowed' : ''}`}
             onClick={() => {
               if (tab === 'connection' || connectionStatus.isConnected) {

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Button } from '../ui/Button';
 import { connectMetaAds, syncMetaCampaigns, useMetaConnection } from '../../services/metaAdsService';
+import { API_URL } from '../../config';
 import {
   ExternalLink,
   AlertTriangle,
@@ -37,7 +38,7 @@ const MetaAdsConnection: React.FC<MetaAdsConnectionProps> = ({ userEmail, onConn
 
   const handleDisconnect = async () => {
     try {
-      await fetch(`/api/meta/disconnect`, {
+      await fetch(`${API_URL}/api/meta/disconnect`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ user_email: userEmail })
