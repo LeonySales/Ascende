@@ -463,17 +463,11 @@ async function startServer() {
       }
 
       console.log('✅ Meta connection saved successfully for:', user_email);
-      const isLocalhost = req.get('host')?.includes('localhost');
-      const appBaseUrl = (process.env.APP_URL && !isLocalhost)
-        ? process.env.APP_URL
-        : `${req.protocol}://${req.get('host')}`.replace(':3000', ':5173'); // Redirect back to Vite port if local
+      const appBaseUrl = process.env.APP_URL || (req.get('host')?.includes('localhost') ? 'http://localhost:5173' : `https://${req.get('host')}`);
       res.redirect(`${appBaseUrl}/tools?meta_connected=true`);
     } catch (error: any) {
       console.error('Meta OAuth callback error:', error?.response?.data || error);
-      const isLocalhost = req.get('host')?.includes('localhost');
-      const appBaseUrl = (process.env.APP_URL && !isLocalhost)
-        ? process.env.APP_URL
-        : `${req.protocol}://${req.get('host')}`.replace(':3000', ':5173');
+      const appBaseUrl = process.env.APP_URL || (req.get('host')?.includes('localhost') ? 'http://localhost:5173' : `https://${req.get('host')}`);
       res.redirect(`${appBaseUrl}/tools?meta_error=callback_failed`);
     }
   });
