@@ -1,0 +1,149 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@400;700&display=swap');
+@import "tailwindcss";
+@plugin "@tailwindcss/typography";
+
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-serif: "Playfair Display", serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+  
+  --color-brand-primary: #2D3250; /* Deep Blue/Purple */
+  --color-brand-secondary: #7077A1;
+  --color-brand-accent: #F6B17A; /* Warm Orange for contrast */
+  --color-brand-success: #10B981;
+}
+
+@layer base {
+  body {
+    @apply font-sans antialiased bg-[#FDFDFD] text-[#1A1A1A] dark:bg-[#050505] dark:text-[#E0E0E0] transition-colors duration-300;
+  }
+}
+
+.font-serif {
+  font-family: var(--font-serif);
+}
+
+.font-mono {
+  font-family: var(--font-mono);
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 4px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: #D1D5DB;
+  border-radius: 10px;
+}
+html.dark ::-webkit-scrollbar-thumb {
+  background: #374151;
+}
+
+/* Markdown styling */
+.markdown-body {
+  @apply text-[#1A1A1A] dark:text-[#E0E0E0];
+}
+
+.markdown-body h1,
+.markdown-body h2,
+.markdown-body h3,
+.markdown-body h4,
+.markdown-body h5,
+.markdown-body h6 {
+  @apply font-bold mb-4 mt-6 text-[#1A1A1A] dark:text-[#E0E0E0];
+}
+
+.markdown-body p {
+  @apply mb-4 leading-relaxed;
+}
+
+.markdown-body ul,
+.markdown-body ol {
+  @apply mb-4 pl-6;
+}
+
+.markdown-body li {
+  @apply mb-2;
+}
+
+.markdown-body blockquote {
+  @apply border-l-4 border-indigo-500 pl-4 py-2 my-4 bg-indigo-50/50 dark:bg-indigo-900/20;
+}
+
+.markdown-body code {
+  @apply bg-zinc-100 dark:bg-zinc-800/50 text-[#1A1A1A] dark:text-[#E0E0E0] px-2 py-1 rounded text-sm;
+}
+
+.markdown-body pre {
+  @apply bg-zinc-900 dark:bg-zinc-800 p-4 rounded-lg my-4 overflow-x-auto;
+}
+
+.markdown-body pre code {
+  @apply bg-transparent p-0;
+}
+
+/* Card improvements */
+.card {
+  @apply bg-white border border-zinc-100 rounded-3xl p-6 shadow-sm dark:bg-[#111111] dark:border-white/5;
+}
+
+/* Extra content container */
+.extra-content-container {
+  @apply prose prose-zinc dark:prose-invert max-w-none bg-white dark:bg-[#111111] p-8 md:p-12 rounded-3xl border border-zinc-100 dark:border-white/5;
+}
+
+/* Reduce excessive spacing */
+.prose {
+  @apply m-0;
+}
+
+.prose > *:first-child {
+  @apply mt-0;
+}
+
+.prose > *:last-child {
+  @apply mb-0;
+}
+
+/* Adjust typography spacing */
+.prose p,
+.prose ul,
+.prose ol {
+  @apply mb-4;
+}
+
+.prose h1,
+.prose h2,
+.prose h3,
+.prose h4 {
+  @apply mt-6 mb-4;
+}
+
+/* Dark theme fixes */
+html.dark .prose-invert {
+  @apply text-[#E0E0E0];
+}
+
+/* Ensure consistent dark theme application */
+html:not(.dark) {
+  @apply bg-[#FDFDFD] text-[#1A1A1A];
+}
+
+html.dark {
+  @apply bg-[#050505] text-[#E0E0E0];
+}
+
+/* Override any conflicting styles */
+body {
+  @apply bg-[#FDFDFD] dark:bg-[#050505] text-[#1A1A1A] dark:text-[#E0E0E0];
+}
+
+/* Mobile-first adjustments */
+@media (max-width: 640px) {
+  .card-p {
+    padding: 1.25rem;
+  }
+}
