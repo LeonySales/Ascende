@@ -1,134 +1,101 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;700&display=swap');
 @import "tailwindcss";
 @plugin "@tailwindcss/typography";
 
 @theme {
   --font-sans: "Outfit", "Inter", ui-sans-serif, system-ui, sans-serif;
-  --font-serif: "Playfair Display", serif;
   --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
-  
-  --color-brand-primary: #2D3250;
-  --color-brand-secondary: #7077A1;
+
+  --color-brand-primary: #111111;
+  --color-brand-secondary: #2D3250;
   --color-brand-accent: #F6B17A;
   --color-brand-success: #10B981;
 
   --radius-3xl: 1.5rem;
-  --radius-4xl: 2rem;
+  --radius-4xl: 2.3rem;
 }
 
 @layer base {
   body {
-    @apply font-sans antialiased bg-[#FAFAFA] text-[#111111] dark:bg-[#050505] dark:text-[#F0F0F0] transition-colors duration-500 selection:bg-indigo-500/10;
+    /* Dark mode by default */
+    @apply font-sans antialiased bg-[#050505] text-[#F0F0F0] transition-colors duration-500 selection:bg-indigo-500/30;
   }
 }
 
-/* Glassmorphism & Surface Styles */
+/* Surfaces - Default to Dark Styles */
 .glass {
-  @apply bg-white/70 backdrop-blur-xl border border-white/20 dark:bg-zinc-900/70 dark:border-white/5;
+  @apply bg-zinc-900/70 backdrop-blur-xl border border-white/5;
 }
 
 .surface {
-  @apply bg-white dark:bg-[#0A0A0A] border border-zinc-100 dark:border-zinc-800/50 shadow-sm;
+  @apply bg-[#0A0A0A] border border-zinc-800/50 shadow-sm;
 }
 
-.surface-elevated {
-  @apply bg-white dark:bg-[#111111] border border-zinc-100 dark:border-zinc-800 shadow-xl shadow-black/5;
+.premium-card {
+  @apply bg-[#0E0E0E] border border-zinc-800 rounded-[2.3rem] p-8 shadow-2xl transition-all duration-500 hover:border-zinc-700;
 }
 
-/* Typography Enhancements */
-.font-serif { font-family: var(--font-serif); }
-.font-mono { font-family: var(--font-mono); }
-.tracking-tight-caps { @apply tracking-[0.2em] uppercase text-[10px] font-bold; }
-
-/* Custom Scrollbar - Minimalist */
-::-webkit-scrollbar {
-  width: 5px;
-}
-::-webkit-scrollbar-track {
-  background: transparent;
-}
-::-webkit-scrollbar-thumb {
-  @apply bg-zinc-200 dark:bg-zinc-800 rounded-full hover:bg-zinc-300 dark:hover:bg-zinc-700 transition-colors;
+/* Typography */
+.font-mono {
+  font-family: var(--font-mono);
 }
 
-/* AI Content / Markdown Styling */
+.tracking-tight-caps {
+  @apply tracking-[0.2em] uppercase text-[10px] font-bold text-zinc-500;
+}
+
+/* AI Content - Dark Theme Optimized */
 .ai-content {
-  @apply prose prose-zinc dark:prose-invert max-w-none;
+  @apply prose prose-invert max-w-none;
 }
 
 .ai-content p {
-  @apply text-zinc-700 dark:text-zinc-300 leading-relaxed mb-4 last:mb-0;
+  @apply text-zinc-400 leading-relaxed mb-4 last:mb-0;
 }
 
 .ai-content strong {
-  @apply text-zinc-900 dark:text-white font-bold;
+  @apply text-white font-bold;
 }
 
-.ai-content ul, .ai-content ol {
-  @apply space-y-2 mb-4;
+.ai-content h1,
+.ai-content h2,
+.ai-content h3,
+.ai-content h4 {
+  @apply font-bold text-white mt-8 mb-4 first:mt-0 tracking-tight;
 }
 
-.ai-content li {
-  @apply text-zinc-700 dark:text-zinc-300;
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 5px;
 }
 
-.ai-content h1, .ai-content h2, .ai-content h3, .ai-content h4 {
-  @apply font-bold text-zinc-900 dark:text-white mt-8 mb-4 first:mt-0;
+::-webkit-scrollbar-thumb {
+  @apply bg-zinc-800 rounded-full hover:bg-zinc-700;
 }
 
-.ai-content blockquote {
-  @apply border-l-4 border-indigo-500/50 pl-4 py-1 my-6 italic text-zinc-600 dark:text-zinc-400 bg-zinc-50 dark:bg-zinc-900/30 rounded-r-xl;
-}
-
-/* Animations */
-@keyframes float {
-  0% { transform: translateY(0px); }
-  50% { transform: translateY(-10px); }
-  100% { transform: translateY(0px); }
-}
-
-.animate-float {
-  animation: float 6s ease-in-out infinite;
-}
-
-/* Enquadramento & Layout Fixes */
-.content-frame {
-  @apply mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8;
-}
-
-.text-balance {
-  text-wrap: balance;
-}
-
-/* Card Improvements */
-.premium-card {
-  @apply bg-white dark:bg-[#111111] border border-zinc-100 dark:border-zinc-800 rounded-[2rem] p-8 shadow-2xl shadow-black/[0.02] hover:shadow-indigo-500/[0.03] transition-all duration-500;
-}
-
-/* Input Styles */
+/* Inputs */
 .premium-input {
-  @apply w-full px-5 py-4 rounded-2xl border border-zinc-200 focus:outline-none focus:ring-4 focus:ring-indigo-500/5 focus:border-indigo-500 transition-all dark:bg-[#0A0A0A] dark:border-zinc-800 dark:text-white font-medium placeholder:text-zinc-400;
+  @apply w-full px-5 py-4 rounded-2xl border border-zinc-800 bg-[#0A0A0A] text-white focus:outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-600 transition-all placeholder:text-zinc-600;
 }
 
-/* Button Subtle Glow */
-.btn-glow {
-  @apply relative overflow-hidden;
+/* Card Overrides for visibility */
+.money-card {
+  @apply bg-[#2D3250] border-none text-white shadow-2xl;
 }
 
-.btn-glow::after {
-  content: '';
-  @apply absolute inset-0 bg-white/20 opacity-0 transition-opacity;
+.money-card-title {
+  @apply text-white font-bold tracking-tight;
 }
 
-.btn-glow:hover::after {
-  @apply opacity-100;
+/* Light mode overrides (only if user explicitly toggles) */
+html.light body {
+  @apply bg-[#FAFAFA] text-[#111111];
 }
 
-/* Mobile-first adjustments */
-@media (max-width: 640px) {
-  .premium-card {
-    padding: 1.5rem;
-    border-radius: 1.5rem;
-  }
+html.light .premium-card {
+  @apply bg-white border-zinc-100 shadow-xl;
 }
 
+html.light .ai-content {
+  @apply prose-zinc;
+}

@@ -140,7 +140,7 @@ const Select = ({ label, value, onChange, options }: any) => (
     <select
       value={value}
       onChange={(e) => onChange(e.target.value)}
-      className="w-full px-4 py-3 rounded-xl border border-zinc-200 focus:outline-none focus:ring-2 focus:ring-black/5 focus:border-black transition-all appearance-none bg-white dark:bg-[#0A0A0A] dark:border-zinc-800 dark:text-white font-light"
+      className="w-full px-5 py-4 rounded-2xl border border-zinc-800 bg-[#0A0A0A] text-white focus:outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-600 transition-all appearance-none font-medium"
     >
       {options.map((opt: any) => (
         <option key={opt.value} value={opt.value}>{opt.label}</option>
@@ -154,7 +154,7 @@ const Select = ({ label, value, onChange, options }: any) => (
 export default function App() {
   const [step, setStep] = useState<'login' | 'home' | 'input' | 'context' | 'loading' | 'dashboard' | 'history' | 'tools' | 'settings' | 'meta-ads'>('login');
   const [userEmail, setUserEmail] = useState('');
-  const [darkMode, setDarkMode] = useState(false);
+  const [darkMode, setDarkMode] = useState(true);
   const [idea, setIdea] = useState('');
   const [activeProject, setActiveProject] = useState<Project | null>(null);
   const [extraTool, setExtraTool] = useState<'copy' | 'ads' | null>(null);
@@ -377,7 +377,7 @@ ${daysText}`;
         </div>
         <div className="space-y-2">
           <h1 className="text-3xl font-light tracking-[0.4em] dark:text-white uppercase">ASCENDE</h1>
-          <p className="text-zinc-500 dark:text-zinc-400 font-light italic">Seu mentor estratégico para renda extra.</p>
+          <p className="text-zinc-500 dark:text-zinc-400 font-normal">Seu mentor estratégico para renda extra.</p>
         </div>
       </div>
       <Card className="p-8 space-y-6">
@@ -418,8 +418,8 @@ ${daysText}`;
       >
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
           <div className="space-y-1">
-            <h1 className="text-5xl font-bold tracking-tight text-zinc-900 dark:text-white">Olá, Estrategista</h1>
-            <p className="text-zinc-500 dark:text-zinc-400 text-lg font-light italic">Seu progresso rumo à liberdade financeira.</p>
+            <h1 className="text-6xl font-black tracking-tighter text-white">Olá, Estrategista</h1>
+            <p className="text-zinc-500 text-lg font-medium">Seu progresso rumo à liberdade financeira.</p>
           </div>
           <Button onClick={() => setStep('input')} className="w-full md:w-auto shadow-lg shadow-indigo-500/20">
             Nova Ideia <Plus className="w-4 h-4" />
@@ -434,7 +434,7 @@ ${daysText}`;
         </div>
 
         {latestProject && (
-          <Card className="p-0 overflow-hidden border-none shadow-2xl bg-white dark:bg-[#111111] group">
+          <Card className="p-0 overflow-hidden border-none shadow-2xl bg-[#0E0E0E] group">
             <div className="grid grid-cols-1 lg:grid-cols-12">
               <div className="lg:col-span-7 p-6 md:p-10 space-y-8">
                 <div className="space-y-4">
@@ -444,7 +444,7 @@ ${daysText}`;
                     </span>
                     <div className="h-px flex-grow bg-zinc-100 dark:bg-white/5" />
                   </div>
-                  <h2 className="text-4xl md:text-7xl font-bold text-zinc-900 dark:text-white tracking-tighter leading-[0.9] font-serif italic text-balance">
+                  <h2 className="text-4xl md:text-7xl font-extrabold text-white tracking-tighter leading-[0.9] text-balance">
                     {latestProject.idea}
                   </h2>
                 </div>
@@ -490,7 +490,7 @@ ${daysText}`;
                   </Button>
                 </div>
               </div>
-              <div className="lg:col-span-5 bg-zinc-50 dark:bg-zinc-900/50 p-6 md:p-10 flex flex-col justify-center border-l border-zinc-100 dark:border-zinc-800/50">
+              <div className="lg:col-span-5 bg-zinc-900/30 p-6 md:p-10 flex flex-col justify-center border-l border-zinc-800/50">
                 <div className="space-y-10">
                   <div className="space-y-6">
                     <div className="flex justify-between items-end">
@@ -707,7 +707,7 @@ ${daysText}`;
             <Button variant="ghost" onClick={() => setStep('home')} className="px-0 hover:bg-transparent -ml-1">
               <ArrowLeft className="w-4 h-4" /> Voltar ao Início
             </Button>
-            <h2 className="text-3xl font-light tracking-tight dark:text-white font-serif italic">{activeProject.idea}</h2>
+            <h2 className="text-3xl font-bold tracking-tight text-white">{activeProject.idea}</h2>
           </div>
           <div className="flex gap-3 w-full md:w-auto">
             <Button onClick={handleExport} variant="outline" className="flex-grow md:flex-grow-0">Exportar Plano</Button>
@@ -717,14 +717,14 @@ ${daysText}`;
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <div className="lg:col-span-1 space-y-8">
-            <Card className="p-8 space-y-8 border-none shadow-2xl bg-[#2D3250] dark:bg-[#1A1A24] text-white relative overflow-hidden">
-              <div className="absolute -right-10 -top-10 w-40 h-40 bg-indigo-500/10 rounded-full blur-3xl" />
-              <div className="absolute -left-10 -bottom-10 w-40 h-40 bg-emerald-500/10 rounded-full blur-3xl" />
+            <Card className="p-8 space-y-8 money-card relative overflow-hidden">
+              <div className="absolute -right-10 -top-10 w-40 h-40 bg-indigo-500/20 rounded-full blur-3xl" />
+              <div className="absolute -left-10 -bottom-10 w-40 h-40 bg-emerald-500/20 rounded-full blur-3xl" />
               <div className="flex items-center gap-3 relative z-10">
                 <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center backdrop-blur-sm">
                   <DollarSign className="w-5 h-5 text-emerald-400" />
                 </div>
-                <h3 className="text-2xl font-normal font-serif italic tracking-tight">Caminho do Dinheiro</h3>
+                <h3 className="text-2xl font-bold tracking-tight text-white">Caminho do Dinheiro</h3>
               </div>
               <div className="space-y-8 relative z-10">
                 <div className="space-y-2">
@@ -738,11 +738,11 @@ ${daysText}`;
                   </p>
                 </div>
                 <div className="grid grid-cols-2 gap-4 pt-4">
-                  <div className="p-4 bg-white/5 rounded-2xl border border-white/10 backdrop-blur-sm">
+                  <div className="p-4 bg-black/20 rounded-2xl border border-white/5 backdrop-blur-sm">
                     <p className="text-[9px] font-bold text-white/40 uppercase tracking-widest mb-1">Meta Mínima</p>
                     <p className="text-lg font-bold text-emerald-400">{activeProject.analysis.monetization?.minimumFinancialGoal || 'N/A'}</p>
                   </div>
-                  <div className="p-4 bg-white/5 rounded-2xl border border-white/10 backdrop-blur-sm">
+                  <div className="p-4 bg-black/20 rounded-2xl border border-white/5 backdrop-blur-sm">
                     <p className="text-[9px] font-bold text-white/40 uppercase tracking-widest mb-1">Previsão</p>
                     <p className="text-lg font-bold text-indigo-300">{activeProject.analysis.monetization?.estimatedTimeForFirstGain || 'N/A'}</p>
                   </div>
@@ -819,7 +819,7 @@ ${daysText}`;
                         onClick={() => toggleTask(index)}
                         className={`flex-shrink-0 w-12 h-12 rounded-2xl flex items-center justify-center transition-all ${isCompleted ? 'bg-emerald-500 text-white' : 'bg-zinc-100 dark:bg-zinc-800 text-zinc-400 hover:bg-zinc-200 dark:hover:bg-zinc-700'}`}
                       >
-                        {isCompleted ? <CheckCircle2 className="w-6 h-6" /> : <span className="font-serif italic text-xl text-zinc-300">{day.day}</span>}
+                        {isCompleted ? <CheckCircle2 className="w-6 h-6" /> : <span className="font-bold text-xl">{day.day}</span>}
                       </button>
                       <div className="space-y-4 flex-grow">
                         <div className="flex flex-col md:flex-row md:justify-between md:items-start gap-2">
