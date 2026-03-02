@@ -717,14 +717,14 @@ ${daysText}`;
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <div className="lg:col-span-1 space-y-8">
-            <Card className="p-8 space-y-8 money-card relative overflow-hidden">
+            <Card className="p-8 space-y-8 bg-[#2D3250]! border-none! text-white! relative overflow-hidden">
               <div className="absolute -right-10 -top-10 w-40 h-40 bg-indigo-500/20 rounded-full blur-3xl" />
               <div className="absolute -left-10 -bottom-10 w-40 h-40 bg-emerald-500/20 rounded-full blur-3xl" />
               <div className="flex items-center gap-3 relative z-10">
                 <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center backdrop-blur-sm">
                   <DollarSign className="w-5 h-5 text-emerald-400" />
                 </div>
-                <h3 className="text-2xl money-card-title">Caminho do Dinheiro</h3>
+                <h3 className="text-2xl text-white! font-black! tracking-tighter!">Caminho do Dinheiro</h3>
               </div>
               <div className="space-y-8 relative z-10">
                 <div className="space-y-2">
