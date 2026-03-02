@@ -93,16 +93,16 @@
   @apply text-white font-black tracking-tighter !important;
 }
 
-/* Remove Light Mode entirely to fix the user's issue */
+/* Force all mode classes to be dark */
 html.light body,
 html.light #root {
   @apply bg-[#050505] text-[#F0F0F0];
 }
 
 html.light .premium-card {
-  @apply bg-white border-zinc-100 shadow-xl;
+  @apply bg-[#0E0E0E] border-zinc-800 shadow-2xl;
 }
 
 html.light .ai-content {
-  @apply prose-zinc;
+  @apply prose-invert;
 }
