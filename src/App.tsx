@@ -55,7 +55,7 @@ const StatCard = ({ label, value, icon: Icon, color = "text-zinc-900", trend }: 
   <Card className="p-6 flex flex-col gap-4 relative overflow-hidden group hover:border-indigo-500/30 transition-all duration-500">
     <div className={`absolute -right-4 -top-4 w-24 h-24 rounded-full opacity-[0.03] dark:opacity-[0.05] blur-2xl ${color.replace('text-', 'bg-')}`} />
     <div className="flex justify-between items-start relative z-10">
-      <div className="w-10 h-10 rounded-full bg-zinc-50 dark:bg-white/5 flex items-center justify-center border border-zinc-100 dark:border-white/5 group-hover:scale-110 transition-transform duration-500">
+      <div className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center border border-white/5 group-hover:scale-110 transition-transform duration-500">
         <Icon className={`w-4 h-4 ${color}`} />
       </div>
       {trend && (
@@ -181,7 +181,7 @@ export default function App() {
     const savedTheme = localStorage.getItem('ascende_theme');
     if (savedTheme) {
       setDarkMode(savedTheme === 'dark');
-    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+    } else {
       setDarkMode(true);
     }
 
@@ -813,7 +813,7 @@ ${daysText}`;
               {activeProject.roadmap.days.map((day, index) => {
                 const isCompleted = activeProject.completed_tasks.includes(index);
                 return (
-                  <Card key={index} className={`relative overflow-hidden transition-all duration-300 ${isCompleted ? 'opacity-60 bg-zinc-50 dark:bg-zinc-900/30' : 'hover:border-indigo-200 dark:hover:border-indigo-900/50'}`}>
+                  <Card key={index} className={`relative overflow-hidden transition-all duration-300 ${isCompleted ? 'opacity-60 bg-black/40 border-zinc-900' : 'hover:border-indigo-500/30'}`}>
                     <div className="flex gap-4 md:gap-6">
                       <button
                         onClick={() => toggleTask(index)}
@@ -918,7 +918,7 @@ ${daysText}`;
 
       {projects.length === 0 ? (
         <Card className="p-12 text-center">
-          <div className="w-16 h-16 bg-zinc-50 dark:bg-zinc-900 rounded-2xl flex items-center justify-center mx-auto mb-6">
+          <div className="w-16 h-16 bg-zinc-900 rounded-2xl flex items-center justify-center mx-auto mb-6">
             <History className="w-8 h-8 text-zinc-300" />
           </div>
           <h3 className="text-xl font-bold dark:text-white mb-2">Nenhum projeto ainda</h3>
@@ -984,7 +984,7 @@ ${daysText}`;
         <Card className="p-6 space-y-6">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-zinc-50 dark:bg-zinc-900 flex items-center justify-center">
+              <div className="w-10 h-10 rounded-xl bg-zinc-900 flex items-center justify-center">
                 <User className="w-5 h-5 text-zinc-400" />
               </div>
               <div>
