@@ -16,9 +16,14 @@
 }
 
 @layer base {
-  body {
-    /* Dark mode by default */
-    @apply font-sans antialiased bg-[#050505] text-[#F0F0F0] transition-colors duration-500 selection:bg-indigo-500/30;
+  * {
+    @apply font-sans;
+  }
+
+  html,
+  body,
+  #root {
+    @apply bg-[#050505] text-[#F0F0F0] min-h-screen transition-colors duration-500 selection:bg-indigo-500/30;
   }
 }
 
@@ -78,18 +83,20 @@
   @apply w-full px-5 py-4 rounded-2xl border border-zinc-800 bg-[#0A0A0A] text-white focus:outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-600 transition-all placeholder:text-zinc-600;
 }
 
-/* Card Overrides for visibility */
 .money-card {
-  @apply bg-[#2D3250] border-none text-white shadow-2xl;
+  background-color: #2D3250 !important;
+  border: none !important;
+  color: white !important;
 }
 
 .money-card-title {
-  @apply text-white font-bold tracking-tight;
+  @apply text-white font-black tracking-tighter !important;
 }
 
-/* Light mode overrides (only if user explicitly toggles) */
-html.light body {
-  @apply bg-[#FAFAFA] text-[#111111];
+/* Remove Light Mode entirely to fix the user's issue */
+html.light body,
+html.light #root {
+  @apply bg-[#050505] text-[#F0F0F0];
 }
 
 html.light .premium-card {

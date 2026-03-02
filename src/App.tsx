@@ -414,7 +414,7 @@ ${daysText}`;
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         exit={{ opacity: 0, y: -10 }}
-        className="max-w-6xl mx-auto space-y-8 pb-24 px-4"
+        className="max-w-6xl mx-auto space-y-8 pb-24 px-4 bg-[#050505]"
       >
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
           <div className="space-y-1">
@@ -700,7 +700,7 @@ ${daysText}`;
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
-        className="max-w-7xl mx-auto space-y-8 pb-24 px-4"
+        className="max-w-7xl mx-auto space-y-8 pb-24 px-4 bg-[#050505]"
       >
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
           <div className="space-y-1">
@@ -724,7 +724,7 @@ ${daysText}`;
                 <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center backdrop-blur-sm">
                   <DollarSign className="w-5 h-5 text-emerald-400" />
                 </div>
-                <h3 className="text-2xl font-bold tracking-tight text-white">Caminho do Dinheiro</h3>
+                <h3 className="text-2xl money-card-title">Caminho do Dinheiro</h3>
               </div>
               <div className="space-y-8 relative z-10">
                 <div className="space-y-2">
@@ -906,7 +906,7 @@ ${daysText}`;
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -10 }}
-      className="max-w-6xl mx-auto pt-12 space-y-8 pb-24 px-6"
+      className="max-w-6xl mx-auto pt-12 space-y-8 pb-24 px-6 bg-[#050505]"
     >
       <div className="space-y-2">
         <Button variant="ghost" onClick={() => setStep('home')} className="px-0 hover:bg-transparent -ml-1">
@@ -973,11 +973,11 @@ ${daysText}`;
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -10 }}
-      className="max-w-2xl mx-auto pt-12 space-y-8 pb-24 px-4"
+      className="max-w-2xl mx-auto pt-12 space-y-8 pb-24 px-4 bg-[#050505]"
     >
       <div className="space-y-1">
-        <h2 className="text-5xl font-light tracking-tight dark:text-white">Ajustes</h2>
-        <p className="text-zinc-500 dark:text-zinc-400 text-sm font-light italic">Configure sua experiência no ASCENDE.</p>
+        <h2 className="text-5xl font-black tracking-tighter text-white">Ajustes</h2>
+        <p className="text-zinc-500 text-sm font-medium">Configure sua experiência no ASCENDE.</p>
       </div>
 
       <div className="space-y-4">
@@ -1034,7 +1034,7 @@ ${daysText}`;
 
   // ---- MAIN RETURN ----
   return (
-    <div className="min-h-screen bg-zinc-50 dark:bg-[#050505] pt-8">
+    <div className="min-h-screen bg-[#050505] pt-8 text-[#F0F0F0]">
       {/* Desktop Sidebar - hidden on mobile */}
       {step !== 'login' && step !== 'loading' && (
         <Sidebar
