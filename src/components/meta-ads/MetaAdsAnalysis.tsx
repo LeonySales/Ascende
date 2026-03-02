@@ -10,6 +10,7 @@ import {
 } from 'lucide-react';
 import { Button } from '../ui/Button';
 import { getMetaAnalysis } from '../../services/metaAdsService';
+import ReactMarkdown from 'react-markdown';
 
 interface MetaAdsAnalysisProps {
   userEmail: string;
@@ -98,7 +99,9 @@ const MetaAdsAnalysis: React.FC<MetaAdsAnalysisProps> = ({
                   <Target className="w-5 h-5 text-indigo-500" />
                   <h4 className="font-bold text-zinc-900 dark:text-white">Resumo Executivo</h4>
                 </div>
-                <p className="text-zinc-800 dark:text-zinc-300 leading-relaxed font-medium">{localAnalysis.resumo_executivo}</p>
+                <div className="text-zinc-800 dark:text-zinc-300 leading-relaxed font-medium ai-content">
+                  <ReactMarkdown>{localAnalysis.resumo_executivo}</ReactMarkdown>
+                </div>
               </div>
             </div>
           </div>
@@ -120,8 +123,8 @@ const MetaAdsAnalysis: React.FC<MetaAdsAnalysisProps> = ({
                         <div className="flex items-center justify-between mb-1">
                           <h5 className="font-bold dark:text-white text-sm">{alert.campanha}</h5>
                           <span className={`text-xs font-bold px-2 py-1 rounded-full ${alert.impacto === 'alto' ? 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400' :
-                              alert.impacto === 'medio' ? 'bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-400' :
-                                'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400'
+                            alert.impacto === 'medio' ? 'bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-400' :
+                              'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400'
                             }`}>{alert.impacto}</span>
                         </div>
                         <p className="text-sm text-red-700 dark:text-red-300 mb-2">{alert.problema}</p>
@@ -175,7 +178,7 @@ const MetaAdsAnalysis: React.FC<MetaAdsAnalysisProps> = ({
                   { label: 'Métrica Preocupante', value: localAnalysis.metricas_destaque.metrica_preocupante },
                   { label: 'Métrica Positiva', value: localAnalysis.metricas_destaque.metrica_positiva },
                 ].map(({ label, value }) => (
-                  <div key={label} className="p-4 bg-white dark:bg-[#111111] border border-zinc-100 dark:border-zinc-800 rounded-2xl">
+                  <div key={label} className="premium-card p-4">
                     <p className="text-xs font-bold text-zinc-400 uppercase tracking-wider mb-1">{label}</p>
                     <p className="font-medium dark:text-white text-sm">{value}</p>
                   </div>
@@ -190,14 +193,16 @@ const MetaAdsAnalysis: React.FC<MetaAdsAnalysisProps> = ({
               <h4 className="font-bold dark:text-white flex items-center gap-2">
                 <CheckCircle2 className="w-5 h-5 text-indigo-500" /> Próximos Passos
               </h4>
-              <div className="p-5 bg-white dark:bg-[#111111] border border-zinc-100 dark:border-zinc-800 rounded-2xl">
+              <div className="premium-card p-5">
                 <ol className="space-y-3">
                   {localAnalysis.proximos_passos.map((step: string, index: number) => (
                     <li key={index} className="flex items-start gap-3">
                       <span className="flex-shrink-0 w-6 h-6 rounded-full bg-indigo-100 dark:bg-indigo-900/30 flex items-center justify-center text-xs font-bold text-indigo-600 dark:text-indigo-400">
                         {index + 1}
                       </span>
-                      <span className="text-zinc-700 dark:text-zinc-300">{step}</span>
+                      <span className="text-zinc-700 dark:text-zinc-300 ai-content">
+                        <ReactMarkdown>{step}</ReactMarkdown>
+                      </span>
                     </li>
                   ))}
                 </ol>

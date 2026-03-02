@@ -29,6 +29,7 @@ import ToolsPage from './components/ToolsPage';
 import Sidebar from './components/Sidebar';
 import { Project } from './types';
 import { Button } from './components/ui/Button';
+import ReactMarkdown from 'react-markdown';
 
 // --- Components ---
 
@@ -114,7 +115,7 @@ const BottomNav = ({ activeTab, onTabChange }: { activeTab: string, onTabChange:
 );
 
 const Card = ({ children, className = "" }: { children: React.ReactNode; className?: string }) => (
-  <div className={`bg-white border border-zinc-100 rounded-3xl p-6 md:p-8 shadow-sm dark:bg-[#111111] dark:border-zinc-800 ${className}`}>
+  <div className={`premium-card ${className}`}>
     {children}
   </div>
 );
@@ -128,7 +129,7 @@ const Input = ({ label, value, onChange, placeholder, type = "text", required = 
       onChange={(e) => onChange(e.target.value)}
       placeholder={placeholder}
       required={required}
-      className="w-full px-4 py-3 rounded-xl border border-zinc-200 focus:outline-none focus:ring-2 focus:ring-black/5 focus:border-black transition-all dark:bg-[#0A0A0A] dark:border-zinc-800 dark:text-white dark:focus:border-zinc-600 font-light"
+      className="premium-input"
     />
   </div>
 );
@@ -417,8 +418,8 @@ ${daysText}`;
       >
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
           <div className="space-y-1">
-            <h1 className="text-4xl font-light tracking-tight dark:text-white">Olá, Estrategista</h1>
-            <p className="text-zinc-500 dark:text-zinc-400 text-sm font-light italic">Aqui está o seu progresso rumo à monetização.</p>
+            <h1 className="text-5xl font-bold tracking-tight text-zinc-900 dark:text-white">Olá, Estrategista</h1>
+            <p className="text-zinc-500 dark:text-zinc-400 text-lg font-light italic">Seu progresso rumo à liberdade financeira.</p>
           </div>
           <Button onClick={() => setStep('input')} className="w-full md:w-auto shadow-lg shadow-indigo-500/20">
             Nova Ideia <Plus className="w-4 h-4" />
@@ -443,13 +444,13 @@ ${daysText}`;
                     </span>
                     <div className="h-px flex-grow bg-zinc-100 dark:bg-white/5" />
                   </div>
-                  <h2 className="text-4xl md:text-6xl font-normal dark:text-white tracking-tighter leading-[0.95] font-serif italic">
+                  <h2 className="text-4xl md:text-7xl font-bold text-zinc-900 dark:text-white tracking-tighter leading-[0.9] font-serif italic text-balance">
                     {latestProject.idea}
                   </h2>
                 </div>
-                <p className="text-lg md:text-xl text-zinc-500 dark:text-zinc-400 leading-relaxed max-w-xl font-light">
-                  {latestProject.analysis.diagnosis.initialApproach}
-                </p>
+                <div className="ai-content text-lg md:text-xl">
+                  <ReactMarkdown>{latestProject.analysis.diagnosis.initialApproach}</ReactMarkdown>
+                </div>
                 <div className="flex flex-wrap items-center gap-8 pt-2">
                   <div className="flex flex-col gap-1">
                     <p className="text-[9px] font-bold text-zinc-400 uppercase tracking-[0.2em]">Tempo</p>
@@ -727,12 +728,14 @@ ${daysText}`;
               </div>
               <div className="space-y-8 relative z-10">
                 <div className="space-y-2">
-                  <p className="text-[10px] font-bold text-white/40 uppercase tracking-[0.2em]">Onde está o dinheiro?</p>
-                  <p className="text-base font-medium text-white/90 leading-relaxed">{activeProject.analysis.monetization?.whereIsTheMoney || 'N/A'}</p>
+                  <p className="text-base font-medium text-white/90 leading-relaxed ai-content">
+                    <ReactMarkdown>{activeProject.analysis.monetization?.whereIsTheMoney || 'N/A'}</ReactMarkdown>
+                  </p>
                 </div>
                 <div className="space-y-2">
-                  <p className="text-[10px] font-bold text-white/40 uppercase tracking-[0.2em]">Primeiro Ganho</p>
-                  <p className="text-base font-medium text-white/90 leading-relaxed">{activeProject.analysis.monetization?.firstGainPath || 'N/A'}</p>
+                  <p className="text-base font-medium text-white/90 leading-relaxed ai-content">
+                    <ReactMarkdown>{activeProject.analysis.monetization?.firstGainPath || 'N/A'}</ReactMarkdown>
+                  </p>
                 </div>
                 <div className="grid grid-cols-2 gap-4 pt-4">
                   <div className="p-4 bg-white/5 rounded-2xl border border-white/10 backdrop-blur-sm">
@@ -833,14 +836,17 @@ ${daysText}`;
                         {!isCompleted && (
                           <div className="space-y-4">
                             <div>
-                              <p className="text-xs font-bold text-zinc-400 uppercase mb-1">Objetivo</p>
-                              <p className="text-sm dark:text-zinc-300">{day.objective}</p>
+                              <p className="text-sm dark:text-zinc-300 ai-content">
+                                <ReactMarkdown>{day.objective}</ReactMarkdown>
+                              </p>
                             </div>
                             <div className="p-4 bg-zinc-50 dark:bg-zinc-900/50 rounded-2xl border border-zinc-100 dark:border-zinc-800">
                               <p className="text-xs font-bold text-zinc-400 uppercase mb-2 flex items-center gap-2">
                                 <Lightbulb className="w-3 h-3" /> Mentoria Prática
                               </p>
-                              <p className="text-sm italic dark:text-zinc-400 leading-relaxed">"{day.mentorContext}"</p>
+                              <div className="text-sm italic dark:text-zinc-400 leading-relaxed ai-content">
+                                <ReactMarkdown>{`"${day.mentorContext}"`}</ReactMarkdown>
+                              </div>
                             </div>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                               <div>

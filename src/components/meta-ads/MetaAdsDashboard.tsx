@@ -75,7 +75,7 @@ const MetaAdsDashboard: React.FC<MetaAdsDashboardProps> = ({ campaigns }) => {
           { label: 'Cliques', value: totalClicks.toLocaleString(), icon: MousePointerClick, color: 'text-amber-500', bgColor: 'bg-amber-100 dark:bg-amber-900/30' },
           { label: 'CTR Médio', value: `${avgCTR.toFixed(2)}%`, icon: TrendingUp, color: 'text-purple-500', bgColor: 'bg-purple-100 dark:bg-purple-900/30' },
         ].map((stat) => (
-          <div key={stat.label} className="p-5 bg-white dark:bg-[#111111] border border-zinc-100 dark:border-zinc-800 rounded-2xl">
+          <div key={stat.label} className="premium-card p-5">
             <div className="flex items-center gap-3">
               <div className={`w-10 h-10 rounded-xl ${stat.bgColor} flex items-center justify-center`}>
                 <stat.icon className={`w-5 h-5 ${stat.color}`} />
@@ -114,7 +114,7 @@ const MetaAdsDashboard: React.FC<MetaAdsDashboardProps> = ({ campaigns }) => {
                 <div
                   key={campaign.id}
                   onClick={() => setExpandedId(isExpanded ? null : campaign.id)}
-                  className={`p-5 bg-white dark:bg-[#111111] border ${isExpanded ? 'border-indigo-500 ring-1 ring-indigo-500/20' : 'border-zinc-100 dark:border-zinc-800'} rounded-2xl hover:border-indigo-300 dark:hover:border-indigo-700 transition-all cursor-pointer`}
+                  className={`premium-card p-5 transition-all cursor-pointer ${isExpanded ? 'border-indigo-500 ring-1 ring-indigo-500/20' : ''}`}
                 >
                   <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                     <div className="flex-1">

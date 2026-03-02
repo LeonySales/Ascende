@@ -16,6 +16,7 @@ import {
   DollarSign
 } from 'lucide-react';
 import { Button } from './ui/Button';
+import ReactMarkdown from 'react-markdown';
 
 interface ToolsPageProps {
   activeProject: any;
@@ -141,8 +142,8 @@ export default function ToolsPage({
             key={tab.id}
             onClick={() => setActiveTab(tab.id as any)}
             className={`pb-3 px-4 font-medium text-sm transition-colors ${activeTab === tab.id
-                ? 'text-indigo-600 dark:text-indigo-400 border-b-2 border-indigo-600 dark:border-indigo-400'
-                : 'text-zinc-500 dark:text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-300'
+              ? 'text-indigo-600 dark:text-indigo-400 border-b-2 border-indigo-600 dark:border-indigo-400'
+              : 'text-zinc-500 dark:text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-300'
               }`}
           >
             {tab.label}
@@ -155,7 +156,7 @@ export default function ToolsPage({
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <button
             onClick={() => setActiveTab('meta-demo')}
-            className="p-6 bg-white dark:bg-[#111111] border border-zinc-100 dark:border-zinc-800 rounded-3xl text-left hover:border-indigo-300 dark:hover:border-indigo-700 transition-all group"
+            className="premium-card p-6 text-left group"
           >
             <div className="flex items-start gap-4">
               <div className="w-12 h-12 rounded-2xl bg-indigo-100 dark:bg-indigo-900/30 flex items-center justify-center group-hover:scale-110 transition-transform">
@@ -176,7 +177,7 @@ export default function ToolsPage({
 
           <button
             onClick={() => setActiveTab('copy')}
-            className="p-6 bg-white dark:bg-[#111111] border border-zinc-100 dark:border-zinc-800 rounded-3xl text-left hover:border-amber-300 dark:hover:border-amber-700 transition-all group"
+            className="premium-card p-6 text-left group"
           >
             <div className="flex items-start gap-4">
               <div className="w-12 h-12 rounded-2xl bg-amber-100 dark:bg-amber-900/30 flex items-center justify-center group-hover:scale-110 transition-transform">
@@ -269,7 +270,9 @@ export default function ToolsPage({
                   <Target className="w-5 h-5 text-indigo-500" />
                   <h4 className="font-bold text-zinc-900 dark:text-white">Resumo Executivo</h4>
                 </div>
-                <p className="text-zinc-700 dark:text-zinc-300 leading-relaxed text-sm">{analysis.resumo_executivo}</p>
+                <div className="text-zinc-700 dark:text-zinc-300 leading-relaxed text-sm ai-content">
+                  <ReactMarkdown>{analysis.resumo_executivo}</ReactMarkdown>
+                </div>
               </div>
             </div>
           </div>
@@ -290,8 +293,8 @@ export default function ToolsPage({
                       <div className="flex items-center gap-2 mb-1">
                         <h5 className="font-bold dark:text-white text-sm">{alert.campanha}</h5>
                         <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${alert.impacto === 'alto'
-                            ? 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400'
-                            : 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400'
+                          ? 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400'
+                          : 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400'
                           }`}>{alert.impacto}</span>
                       </div>
                       <p className="text-sm text-red-700 dark:text-red-300 mb-1">{alert.problema}</p>
@@ -354,7 +357,7 @@ export default function ToolsPage({
             <h4 className="font-bold dark:text-white flex items-center gap-2">
               <CheckCircle2 className="w-5 h-5 text-indigo-500" /> Próximos Passos
             </h4>
-            <div className="p-5 bg-white dark:bg-[#111111] border border-zinc-100 dark:border-zinc-800 rounded-2xl">
+            <div className="premium-card p-6">
               <ol className="space-y-3">
                 {analysis.proximos_passos.map((step, index) => (
                   <li key={index} className="flex items-start gap-3">
@@ -400,7 +403,7 @@ export default function ToolsPage({
                   </Button>
                 </div>
 
-                <div className="p-6 bg-white dark:bg-[#111111] border border-zinc-100 dark:border-zinc-800 rounded-3xl space-y-4">
+                <div className="premium-card p-6 space-y-4">
                   <div className="flex items-center gap-3">
                     <div className="w-10 h-10 rounded-xl bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center">
                       <Megaphone className="w-5 h-5 text-emerald-500" />
@@ -423,8 +426,8 @@ export default function ToolsPage({
                     <Sparkles className="w-5 h-5 text-indigo-500" />
                     {extraTool === 'copy' ? 'Copy Gerada' : 'Anúncios Gerados'}
                   </h4>
-                  <div className="p-6 bg-zinc-50 dark:bg-zinc-900/50 rounded-2xl border border-zinc-100 dark:border-zinc-800">
-                    <pre className="whitespace-pre-wrap text-sm text-zinc-700 dark:text-zinc-300 font-sans leading-relaxed">{extraResult}</pre>
+                  <div className="premium-card p-8 md:p-12 ai-content">
+                    <ReactMarkdown>{extraResult}</ReactMarkdown>
                   </div>
                 </div>
               )}
