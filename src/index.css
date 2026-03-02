@@ -86,13 +86,11 @@
 }
 
 .money-card {
-  background-color: #2D3250 !important;
-  border: none !important;
-  color: white !important;
+  @apply bg-[#2D3250] ! border-none ! text-white !;
 }
 
 .money-card-title {
-  @apply text-white font-black tracking-tighter !important;
+  @apply text-white ! font-black ! tracking-tighter !;
 }
 
 /* Force all mode classes to be dark */
