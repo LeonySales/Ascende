@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { motion } from 'motion/react';
-import { 
-  ArrowLeft, 
-  Zap, 
-  BarChart3, 
-  FileText, 
+import {
+  ArrowLeft,
+  Zap,
+  BarChart3,
+  FileText,
   Megaphone,
   ChevronRight,
   Sparkles,
@@ -76,9 +76,9 @@ const DEMO_ANALYSIS = {
   ]
 };
 
-export default function ToolsPage({ 
-  activeProject, 
-  onBack, 
+export default function ToolsPage({
+  activeProject,
+  onBack,
   onGoToMetaAds,
   onGenerateCopy,
   onGenerateAds,
@@ -107,7 +107,7 @@ export default function ToolsPage({
           />
         </svg>
         <div className="absolute inset-0 flex flex-col items-center justify-center">
-          <span className="text-2xl font-bold dark:text-white">{score}</span>
+          <span className="text-2xl font-bold text-zinc-900 dark:text-white">{score}</span>
           <span className="text-[10px] text-zinc-500">/ 100</span>
         </div>
       </div>
@@ -126,7 +126,7 @@ export default function ToolsPage({
         <Button variant="ghost" onClick={onBack} className="px-0 hover:bg-transparent -ml-1">
           <ArrowLeft className="w-4 h-4" /> Voltar
         </Button>
-        <h2 className="text-4xl font-bold tracking-tight dark:text-white">Ferramentas</h2>
+        <h2 className="text-4xl font-bold tracking-tight text-zinc-900 dark:text-white">Ferramentas</h2>
         <p className="text-zinc-500 dark:text-zinc-400">Recursos estratégicos para acelerar sua monetização.</p>
       </div>
 
@@ -140,11 +140,10 @@ export default function ToolsPage({
           <button
             key={tab.id}
             onClick={() => setActiveTab(tab.id as any)}
-            className={`pb-3 px-4 font-medium text-sm transition-colors ${
-              activeTab === tab.id
+            className={`pb-3 px-4 font-medium text-sm transition-colors ${activeTab === tab.id
                 ? 'text-indigo-600 dark:text-indigo-400 border-b-2 border-indigo-600 dark:border-indigo-400'
                 : 'text-zinc-500 dark:text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-300'
-            }`}
+              }`}
           >
             {tab.label}
           </button>
@@ -164,7 +163,7 @@ export default function ToolsPage({
               </div>
               <div className="flex-grow">
                 <div className="flex items-center justify-between">
-                  <h3 className="font-bold dark:text-white">Meta Ads Analyzer</h3>
+                  <h3 className="font-bold text-zinc-900 dark:text-white">Meta Ads Analyzer</h3>
                   <ChevronRight className="w-4 h-4 text-zinc-400 group-hover:text-indigo-500 transition-colors" />
                 </div>
                 <p className="text-sm text-zinc-500 dark:text-zinc-400 mt-1">Analise suas campanhas com IA e receba insights acionáveis</p>
@@ -246,7 +245,7 @@ export default function ToolsPage({
         <div className="space-y-6">
           <div className="flex items-center justify-between">
             <div>
-              <h3 className="text-xl font-bold dark:text-white">Análise por IA</h3>
+              <h3 className="text-xl font-bold text-zinc-900 dark:text-white">Análise por IA</h3>
               <p className="text-xs text-zinc-400 mt-1">Demonstração — conecte sua conta para análise real</p>
             </div>
             <div className="flex gap-3">
@@ -268,7 +267,7 @@ export default function ToolsPage({
               <div className="p-6 bg-indigo-50 dark:bg-indigo-900/10 rounded-2xl border border-indigo-100 dark:border-indigo-800/50 h-full flex flex-col justify-center">
                 <div className="flex items-center gap-2 mb-3">
                   <Target className="w-5 h-5 text-indigo-500" />
-                  <h4 className="font-bold dark:text-white">Resumo Executivo</h4>
+                  <h4 className="font-bold text-zinc-900 dark:text-white">Resumo Executivo</h4>
                 </div>
                 <p className="text-zinc-700 dark:text-zinc-300 leading-relaxed text-sm">{analysis.resumo_executivo}</p>
               </div>
@@ -290,11 +289,10 @@ export default function ToolsPage({
                     <div>
                       <div className="flex items-center gap-2 mb-1">
                         <h5 className="font-bold dark:text-white text-sm">{alert.campanha}</h5>
-                        <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
-                          alert.impacto === 'alto' 
-                            ? 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400' 
+                        <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${alert.impacto === 'alto'
+                            ? 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400'
                             : 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400'
-                        }`}>{alert.impacto}</span>
+                          }`}>{alert.impacto}</span>
                       </div>
                       <p className="text-sm text-red-700 dark:text-red-300 mb-1">{alert.problema}</p>
                       <p className="text-xs text-zinc-600 dark:text-zinc-400">{alert.sugestao}</p>

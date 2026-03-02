@@ -476,13 +476,15 @@ async function startServer() {
   });
 
   app.get("/api/meta/campaigns", async (req, res) => {
-    const { user_email } = req.query;
+    const { user_email, ad_account_id } = req.query;
     try {
-      const connection = db.prepare(`
-        SELECT * FROM meta_connections 
-        WHERE user_email = ? AND is_active = 1 
-        ORDER BY connected_at DESC LIMIT 1
-      `).get(user_email);
+      let connection;
+      if (ad_account_id) {
+        connection = db.prepare(`SELECT * FROM meta_connections WHERE user_email = ? AND ad_account_id = ? AND is_active = 1`).get(user_email, ad_account_id);
+      } else {
+        connection = db.prepare(`SELECT * FROM meta_connections WHERE user_email = ? AND is_active = 1 ORDER BY connected_at DESC LIMIT 1`).get(user_email);
+      }
+
       if (!connection) return res.status(404).json({ error: 'No connection found' });
 
       const campaigns = db.prepare(`
@@ -502,9 +504,14 @@ async function startServer() {
   });
 
   app.post("/api/meta/sync", async (req, res) => {
-    const { user_email } = req.body;
+    const { user_email, ad_account_id } = req.body;
     try {
-      const connection = db.prepare(`SELECT * FROM meta_connections WHERE user_email = ? AND is_active = 1 ORDER BY connected_at DESC LIMIT 1`).get(user_email);
+      let connection;
+      if (ad_account_id) {
+        connection = db.prepare(`SELECT * FROM meta_connections WHERE user_email = ? AND ad_account_id = ? AND is_active = 1`).get(user_email, ad_account_id);
+      } else {
+        connection = db.prepare(`SELECT * FROM meta_connections WHERE user_email = ? AND is_active = 1 ORDER BY connected_at DESC LIMIT 1`).get(user_email);
+      }
       if (!connection) return res.status(404).json({ error: 'No active Meta connection found' });
       const decryptedToken = decryptToken(connection.access_token);
       // Normalize ad_account_id — strip 'act_' prefix if present before adding it back
@@ -533,9 +540,14 @@ async function startServer() {
   });
 
   app.get("/api/meta/analysis", async (req, res) => {
-    const { user_email } = req.query;
+    const { user_email, ad_account_id } = req.query;
     try {
-      const connection = db.prepare(`SELECT * FROM meta_connections WHERE user_email = ? AND is_active = 1 ORDER BY connected_at DESC LIMIT 1`).get(user_email);
+      let connection;
+      if (ad_account_id) {
+        connection = db.prepare(`SELECT * FROM meta_connections WHERE user_email = ? AND ad_account_id = ? AND is_active = 1`).get(user_email, ad_account_id);
+      } else {
+        connection = db.prepare(`SELECT * FROM meta_connections WHERE user_email = ? AND is_active = 1 ORDER BY connected_at DESC LIMIT 1`).get(user_email);
+      }
       if (!connection) return res.status(404).json({ error: 'No active Meta connection found' });
       const campaigns = db.prepare(`SELECT * FROM meta_campaigns WHERE connection_id = ? ORDER BY synced_at DESC`).all(connection.id);
       if (!campaigns || campaigns.length === 0) return res.status(404).json({ error: 'No campaign data found' });
@@ -568,14 +580,32 @@ async function startServer() {
   app.get("/api/meta/connection-status", async (req, res) => {
     const { user_email } = req.query;
     try {
-      const connection = db.prepare(`SELECT * FROM meta_connections WHERE user_email = ? AND is_active = 1 ORDER BY connected_at DESC LIMIT 1`).get(user_email);
-      if (!connection) return res.status(404).json({ error: 'No active Meta connection found' });
-      const campaigns = db.prepare(`SELECT COUNT(*) as count FROM meta_campaigns WHERE connection_id = ?`).get(connection.id);
+      const connections = db.prepare(`SELECT * FROM meta_connections WHERE user_email = ? AND is_active = 1 ORDER BY connected_at DESC`).all(user_email);
+      if (connections.length === 0) return res.status(404).json({ error: 'No active Meta connection found' });
+
+      const primaryConnection = connections[0];
+      const campaignsCount = db.prepare(`SELECT COUNT(*) as count FROM meta_campaigns WHERE connection_id = ?`).get(primaryConnection.id);
+
       res.json({
         isConnected: true,
-        connection: { id: connection.id, user_email: connection.user_email, ad_account_id: connection.ad_account_id, business_name: connection.business_name, connected_at: connection.connected_at, last_sync_at: connection.last_sync_at },
-        lastSync: connection.last_sync_at,
-        campaignsCount: campaigns.count
+        connections: connections.map(c => ({
+          id: c.id,
+          user_email: c.user_email,
+          ad_account_id: c.ad_account_id,
+          business_name: c.business_name,
+          connected_at: c.connected_at,
+          last_sync_at: c.last_sync_at
+        })),
+        connection: {
+          id: primaryConnection.id,
+          user_email: primaryConnection.user_email,
+          ad_account_id: primaryConnection.ad_account_id,
+          business_name: primaryConnection.business_name,
+          connected_at: primaryConnection.connected_at,
+          last_sync_at: primaryConnection.last_sync_at
+        },
+        lastSync: primaryConnection.last_sync_at,
+        campaignsCount: campaignsCount.count
       });
     } catch (error) {
       console.error('Meta connection status error:', error);

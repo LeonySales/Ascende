@@ -9,6 +9,7 @@ import { Button } from '../ui/Button';
 import {
   getMetaConnectionStatus,
   syncMetaCampaigns,
+  getMetaAnalysis,
   MetaConnectionStatus,
   MetaCampaign
 } from '../../services/metaAdsService';
@@ -21,6 +22,7 @@ interface MetaAdsPageProps {
 export default function MetaAdsPage({ userEmail, onBack }: MetaAdsPageProps) {
   const [activeTab, setActiveTab] = useState<'connection' | 'dashboard' | 'analysis'>('connection');
   const [connectionStatus, setConnectionStatus] = useState<MetaConnectionStatus>({ isConnected: false });
+  const [selectedAccountId, setSelectedAccountId] = useState<string | null>(null);
   const [campaigns, setCampaigns] = useState<MetaCampaign[]>([]);
   const [analysis, setAnalysis] = useState<any>(null);
   const [loading, setLoading] = useState(true);
@@ -55,9 +57,12 @@ export default function MetaAdsPage({ userEmail, onBack }: MetaAdsPageProps) {
       const status = await getMetaConnectionStatus(userEmail);
       setConnectionStatus(status);
 
-      // If connected, fetch campaigns
-      if (status.isConnected) {
-        await fetchCampaigns();
+      if (status.isConnected && status.connections && status.connections.length > 0) {
+        const initialAccountId = selectedAccountId || status.connections[0].ad_account_id;
+        if (!selectedAccountId) {
+          setSelectedAccountId(initialAccountId);
+        }
+        await fetchCampaigns(initialAccountId);
       }
     } catch (error) {
       console.error('Error fetching connection status:', error);
@@ -66,9 +71,20 @@ export default function MetaAdsPage({ userEmail, onBack }: MetaAdsPageProps) {
     }
   };
 
-  const fetchCampaigns = async () => {
+  useEffect(() => {
+    if (selectedAccountId && connectionStatus.isConnected) {
+      fetchCampaigns(selectedAccountId);
+      if (activeTab === 'analysis') fetchAnalysis(selectedAccountId);
+    }
+  }, [selectedAccountId]);
+
+  const fetchCampaigns = async (adAccountId?: string) => {
     try {
-      const response = await fetch(`${API_URL}/api/meta/campaigns?user_email=${encodeURIComponent(userEmail)}`);
+      const url = new URL(`${API_URL}/api/meta/campaigns`);
+      url.searchParams.append('user_email', userEmail);
+      if (adAccountId) url.searchParams.append('ad_account_id', adAccountId);
+
+      const response = await fetch(url.toString());
       if (response.ok) {
         const data = await response.json();
         setCampaigns(data);
@@ -78,12 +94,12 @@ export default function MetaAdsPage({ userEmail, onBack }: MetaAdsPageProps) {
     }
   };
 
-  const fetchAnalysis = async () => {
+  const fetchAnalysis = async (adAccountId?: string) => {
     try {
-      const response = await fetch(`${API_URL}/api/meta/analysis?user_email=${encodeURIComponent(userEmail)}`);
-      if (response.ok) {
-        const data = await response.json();
-        setAnalysis(data);
+      const idToUse = adAccountId || selectedAccountId;
+      const response = await getMetaAnalysis(userEmail, idToUse || undefined);
+      if (response) {
+        setAnalysis(response);
       }
     } catch (error) {
       console.error('Error fetching analysis:', error);
@@ -93,10 +109,10 @@ export default function MetaAdsPage({ userEmail, onBack }: MetaAdsPageProps) {
   const handleSync = async () => {
     setSyncing(true);
     try {
-      const success = await syncMetaCampaigns(userEmail);
+      const success = await syncMetaCampaigns(userEmail, selectedAccountId || undefined);
       if (success) {
-        await fetchCampaigns();
-        await fetchConnectionStatus();
+        await fetchCampaigns(selectedAccountId || undefined);
+        fetchConnectionStatus();
       }
     } catch (error) {
       console.error('Error syncing:', error);
@@ -138,6 +154,27 @@ export default function MetaAdsPage({ userEmail, onBack }: MetaAdsPageProps) {
             </p>
           </div>
           <div className="flex items-center gap-3">
+            {connectionStatus.isConnected && connectionStatus.connections && connectionStatus.connections.length > 1 && (
+              <div className="relative">
+                <select
+                  value={selectedAccountId || ''}
+                  onChange={(e) => setSelectedAccountId(e.target.value)}
+                  className="pl-3 pr-8 py-2 rounded-xl border border-zinc-200 focus:outline-none focus:ring-2 focus:ring-black/5 focus:border-black transition-all dark:bg-zinc-900 dark:border-zinc-800 dark:text-white font-bold text-sm appearance-none bg-white"
+                >
+                  {connectionStatus.connections.map(conn => (
+                    <option key={conn.ad_account_id} value={conn.ad_account_id}>
+                      {conn.business_name} ({conn.ad_account_id})
+                    </option>
+                  ))}
+                </select>
+                <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none">
+                  <svg className="w-4 h-4 text-zinc-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+                  </svg>
+                </div>
+              </div>
+            )}
+
             {connectionStatus.isConnected ? (
               <>
                 <span className="px-3 py-1 bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400 text-sm font-bold rounded-full">

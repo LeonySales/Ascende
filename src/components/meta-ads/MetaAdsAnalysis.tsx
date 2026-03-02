@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { 
-  TrendingUp, 
-  AlertTriangle, 
-  Lightbulb, 
-  Target, 
+import {
+  TrendingUp,
+  AlertTriangle,
+  Lightbulb,
+  Target,
   CheckCircle2,
   RotateCcw,
   Sparkles
@@ -18,11 +18,11 @@ interface MetaAdsAnalysisProps {
   loading?: boolean;
 }
 
-const MetaAdsAnalysis: React.FC<MetaAdsAnalysisProps> = ({ 
-  userEmail, 
-  analysis, 
-  onRefresh, 
-  loading = false 
+const MetaAdsAnalysis: React.FC<MetaAdsAnalysisProps> = ({
+  userEmail,
+  analysis,
+  onRefresh,
+  loading = false
 }) => {
   const [localAnalysis, setLocalAnalysis] = useState<any>(analysis);
   const [isGenerating, setIsGenerating] = useState(false);
@@ -72,7 +72,7 @@ const MetaAdsAnalysis: React.FC<MetaAdsAnalysisProps> = ({
   return (
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-        <h3 className="text-xl font-bold dark:text-white">Análise por IA</h3>
+        <h3 className="text-xl font-bold text-zinc-900 dark:text-white">Análise por IA</h3>
         <div className="flex gap-3">
           <Button onClick={handleGenerateAnalysis} variant="secondary" className="flex items-center gap-2" loading={isGenerating}>
             <Sparkles className="w-4 h-4" />
@@ -96,9 +96,9 @@ const MetaAdsAnalysis: React.FC<MetaAdsAnalysisProps> = ({
               <div className="p-6 bg-indigo-50 dark:bg-indigo-900/10 rounded-2xl border border-indigo-100 dark:border-indigo-800/50">
                 <div className="flex items-center gap-2 mb-3">
                   <Target className="w-5 h-5 text-indigo-500" />
-                  <h4 className="font-bold dark:text-white">Resumo Executivo</h4>
+                  <h4 className="font-bold text-zinc-900 dark:text-white">Resumo Executivo</h4>
                 </div>
-                <p className="text-zinc-700 dark:text-zinc-300 leading-relaxed">{localAnalysis.resumo_executivo}</p>
+                <p className="text-zinc-800 dark:text-zinc-300 leading-relaxed font-medium">{localAnalysis.resumo_executivo}</p>
               </div>
             </div>
           </div>
@@ -106,7 +106,7 @@ const MetaAdsAnalysis: React.FC<MetaAdsAnalysisProps> = ({
           {/* Critical Alerts */}
           {localAnalysis.alertas_criticos?.length > 0 && (
             <div className="space-y-4">
-              <h4 className="font-bold dark:text-white flex items-center gap-2">
+              <h4 className="font-bold text-zinc-900 dark:text-white flex items-center gap-2">
                 <AlertTriangle className="w-5 h-5 text-red-500" /> Alertas Críticos
               </h4>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -119,11 +119,10 @@ const MetaAdsAnalysis: React.FC<MetaAdsAnalysisProps> = ({
                       <div className="flex-grow">
                         <div className="flex items-center justify-between mb-1">
                           <h5 className="font-bold dark:text-white text-sm">{alert.campanha}</h5>
-                          <span className={`text-xs font-bold px-2 py-1 rounded-full ${
-                            alert.impacto === 'alto' ? 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400' :
-                            alert.impacto === 'medio' ? 'bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-400' :
-                            'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400'
-                          }`}>{alert.impacto}</span>
+                          <span className={`text-xs font-bold px-2 py-1 rounded-full ${alert.impacto === 'alto' ? 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400' :
+                              alert.impacto === 'medio' ? 'bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-400' :
+                                'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400'
+                            }`}>{alert.impacto}</span>
                         </div>
                         <p className="text-sm text-red-700 dark:text-red-300 mb-2">{alert.problema}</p>
                         <p className="text-sm text-zinc-600 dark:text-zinc-400">{alert.sugestao}</p>

@@ -62,7 +62,7 @@ const MetaAdsConnection: React.FC<MetaAdsConnectionProps> = ({ userEmail, onConn
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h3 className="text-xl font-bold dark:text-white">Conexão Meta Ads</h3>
+        <h3 className="text-xl font-bold text-zinc-900 dark:text-white">Conexão Meta Ads</h3>
         <button
           onClick={() => reconnect()}
           className="p-2 rounded-full hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors"

@@ -46,6 +46,7 @@ export interface MetaAnalysis {
 
 export interface MetaConnectionStatus {
   isConnected: boolean;
+  connections?: MetaConnection[];
   connection?: MetaConnection;
   lastSync?: string;
   campaignsCount?: number;
@@ -67,6 +68,7 @@ export const getMetaConnectionStatus = async (userEmail: string): Promise<MetaCo
     const data = await response.json();
     return {
       isConnected: true,
+      connections: data.connections,
       connection: data.connection,
       lastSync: data.lastSync,
       campaignsCount: data.campaignsCount
@@ -78,12 +80,12 @@ export const getMetaConnectionStatus = async (userEmail: string): Promise<MetaCo
 };
 
 // Sync Meta campaigns
-export const syncMetaCampaigns = async (userEmail: string): Promise<boolean> => {
+export const syncMetaCampaigns = async (userEmail: string, adAccountId?: string): Promise<boolean> => {
   try {
     const response = await fetch(`${API_URL}/api/meta/sync`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ user_email: userEmail })
+      body: JSON.stringify({ user_email: userEmail, ad_account_id: adAccountId })
     });
     if (!response.ok) throw new Error(`Failed to sync campaigns: ${response.status}`);
     const result = await response.json();
@@ -96,9 +98,12 @@ export const syncMetaCampaigns = async (userEmail: string): Promise<boolean> => 
 };
 
 // Get Meta analysis
-export const getMetaAnalysis = async (userEmail: string): Promise<MetaAnalysis | null> => {
+export const getMetaAnalysis = async (userEmail: string, adAccountId?: string): Promise<MetaAnalysis | null> => {
   try {
-    const response = await fetch(`${API_URL}/api/meta/analysis?user_email=${encodeURIComponent(userEmail)}`);
+    const url = new URL(`${API_URL}/api/meta/analysis`);
+    url.searchParams.append('user_email', userEmail);
+    if (adAccountId) url.searchParams.append('ad_account_id', adAccountId);
+    const response = await fetch(url.toString());
     if (!response.ok) {
       if (response.status === 404) return null;
       throw new Error(`Failed to get analysis: ${response.status}`);
