@@ -228,7 +228,7 @@ async function startServer() {
     try {
       const { idea, context } = req.body;
       const response = await ai.models.generateContent({
-        model: "gemini-2.5-flash",
+        model: "gemini-1.5-flash",
         contents: `Analise a seguinte ideia sob a ótica do "Caminho do Dinheiro". O foco é transformar essa ideia em renda extra real o mais rápido possível.\n        Ideia: ${idea}\n        Contexto do Usuário: ${JSON.stringify(context)}`,
         config: {
           systemInstruction: "Você é o ASCENDE, um mentor operacional sênior focado em monetização rápida. Sua missão é cortar o excesso de informação e focar no que gera dinheiro. Você deve responder claramente: 1. Onde está o dinheiro? 2. Qual o caminho mais curto para o primeiro ganho? 3. O que fazer hoje? Seja firme, diga 'não' para expansões de escopo desnecessárias. Use um tom experiente e direto.",
@@ -261,7 +261,7 @@ async function startServer() {
     try {
       const { idea, context, analysis } = req.body;
       const response = await ai.models.generateContent({
-        model: "gemini-2.5-flash",
+        model: "gemini-1.5-flash",
         contents: `Gere um cronograma de execução de 7 dias focado em MONETIZAÇÃO.\n        Ideia: ${idea}\n        Contexto: ${JSON.stringify(context)}\n        Análise: ${JSON.stringify(analysis)}`,
         config: {
           systemInstruction: "Você é um mentor operacional focado em lucro. Crie um plano que priorize ações com retorno financeiro rápido.",
@@ -290,7 +290,7 @@ async function startServer() {
     try {
       const { idea, analysis } = req.body;
       const response = await ai.models.generateContent({
-        model: "gemini-2.5-flash",
+        model: "gemini-1.5-flash",
         contents: `Gere uma copy persuasiva para o seguinte projeto:\n        Projeto: ${idea}\n        Análise: ${JSON.stringify(analysis)}`,
         config: { systemInstruction: "Você é um copywriter sênior focado em conversão. Gere uma copy estruturada com Headline, Problema, Solução, Diferencial e CTA único." }
       });
@@ -307,7 +307,7 @@ async function startServer() {
     try {
       const { idea, analysis } = req.body;
       const response = await ai.models.generateContent({
-        model: "gemini-2.5-flash",
+        model: "gemini-1.5-flash",
         contents: `Gere 3 ideias de anúncios para o seguinte projeto:\n        Projeto: ${idea}\n        Análise: ${JSON.stringify(analysis)}`,
         config: { systemInstruction: "Você é um estrategista de tráfego pago. Gere ideias de criativos, ângulos de venda e estrutura de anúncio para testes iniciais." }
       });
@@ -328,7 +328,7 @@ async function startServer() {
       else analysisPrompt += "\n\nOs dados foram inseridos manualmente pelo usuário.";
       analysisPrompt += "\n\nForneça:\n1. Avaliação geral\n2. Pontos fortes\n3. Oportunidades de melhoria\n4. Recomendações específicas\n5. Novas ideias para testar";
       const response = await ai.models.generateContent({
-        model: "gemini-2.5-flash",
+        model: "gemini-1.5-flash",
         contents: analysisPrompt,
         config: { systemInstruction: "Você é um especialista sênior em tráfego pago do Meta. Avalie criticamente a campanha e forneça insights acionáveis." }
       });
@@ -559,7 +559,7 @@ async function startServer() {
       const systemPrompt = `Você é um especialista em tráfego pago com 10 anos de experiência em Meta Ads. Analise os dados das campanhas fornecidos e retorne SOMENTE um JSON válido com a seguinte estrutura:
       {"score_geral": number, "resumo_executivo": string, "alertas_criticos": [{"campanha": string, "problema": string, "impacto": "alto|medio|baixo", "sugestao": string}], "oportunidades": [{"titulo": string, "descricao": string, "acao_recomendada": string, "ganho_estimado": string}], "metricas_destaque": {"melhor_campanha": string, "pior_campanha": string, "metrica_preocupante": string, "metrica_positiva": string}, "proximos_passos": [string]}`;
       const response = await ai.models.generateContent({
-        model: "gemini-2.5-flash",
+        model: "gemini-1.5-flash",
         contents: `Analise os dados das campanhas do Meta Ads:\n${JSON.stringify(analysisData, null, 2)}`,
         config: { systemInstruction: systemPrompt, responseMimeType: "application/json" }
       });
@@ -585,7 +585,6 @@ async function startServer() {
         return res.status(400).json({ error: 'Missing required parameters' });
       }
 
-      // Find the campaign and verify it belongs to the user's connection (regardless of active status)
       const campaignRow = db.prepare(`
         SELECT c.*, conn.business_name, conn.user_email as owner_email
         FROM meta_campaigns c 
@@ -594,45 +593,53 @@ async function startServer() {
       `).get(campaign_id, campaign_id) as any;
 
       if (!campaignRow) {
-        return res.status(404).json({ error: 'Campanha não encontrada no banco de dados' });
+        return res.status(404).json({ error: 'Campanha não encontrada' });
       }
 
-      // Security check: ensure the campaign belongs to the user's email
       if (campaignRow.owner_email !== user_email) {
-        return res.status(403).json({ error: 'Acesso negado para esta campanha' });
+        return res.status(403).json({ error: 'Acesso negado' });
       }
 
       const campaignData = JSON.parse(campaignRow.raw_data);
-      const systemPrompt = `Você é um gestor de tráfego de alta performance. Analise os detalhes desta campanha específica do Meta Ads e forneça insights técnicos acionáveis. SEJA PROFISSIONAL E TÉCNICO.
-      
-      RETORNE UM JSON NO FORMATO:
-      {
-        "score": number (0-100),
-        "diagnosis": string,
-        "copy_analysis": string,
-        "targeting_analysis": string,
-        "critical_fix": string,
-        "growth_opportunity": string,
-        "next_steps": [string]
-      }`;
+      console.log('AI analyzing campaign:', campaignRow.name);
+
+      const systemPrompt = `Você é um gestor de tráfego de alta performance. Analise os detalhes desta campanha Meta Ads e forneça insights técnicos. Retorne APENAS um JSON válido.`;
 
       const response = await ai.models.generateContent({
         model: "gemini-1.5-flash",
-        contents: `Analise esta campanha do Meta Ads:\n${JSON.stringify({
+        contents: `Analise esta campanha:\n${JSON.stringify({
           name: campaignData.name,
           objective: campaignData.objective,
           insights: campaignData.insights,
-          adsets: campaignData.adsets?.data?.map((a: any) => ({ name: a.name, targeting: a.targeting, insights: a.insights })),
-          ads: campaignData.ads?.data?.map((a: any) => ({ name: a.name, creative: a.creative, insights: a.insights }))
+          adsets: (campaignData.adsets?.data || []).map((a: any) => ({
+            name: a.name,
+            targeting: a.targeting,
+            insights: a.insights
+          })),
+          ads: (campaignData.ads?.data || []).map((a: any) => ({
+            name: a.name,
+            creative: a.creative,
+            insights: a.insights
+          }))
         }, null, 2)}`,
         config: { systemInstruction: systemPrompt, responseMimeType: "application/json" }
       });
 
-      const parsed = JSON.parse(response.text || "{}");
-      res.json(parsed);
-    } catch (error) {
-      console.error('Campaign specific analysis error:', error);
-      res.status(500).json({ error: 'Falha ao analisar a campanha individual' });
+      if (!response.text) {
+        console.error('Empty AI response from Gemini');
+        return res.status(500).json({ error: 'Falha no serviço de IA: Resposta vazia' });
+      }
+
+      try {
+        const parsed = JSON.parse(response.text);
+        res.json(parsed);
+      } catch (e) {
+        console.error('Failed to parse AI JSON:', response.text);
+        res.status(500).json({ error: 'Erro ao processar resposta da IA' });
+      }
+    } catch (error: any) {
+      console.error('Campaign specific analysis error:', error.message || error);
+      res.status(500).json({ error: 'Falha ao analisar a campanha: ' + (error.message || 'Erro interno') });
     }
   });
 

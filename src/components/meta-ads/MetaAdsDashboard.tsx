@@ -4,6 +4,8 @@ import {
   DollarSign,
   Eye,
   MousePointerClick,
+  RotateCcw,
+  Sparkles,
   Filter,
   Download,
   Zap,
