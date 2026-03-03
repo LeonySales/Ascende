@@ -581,31 +581,43 @@ async function startServer() {
   app.post("/api/meta/campaign-analysis", async (req, res) => {
     const { user_email, campaign_id } = req.body;
     try {
+      if (!user_email || !campaign_id) {
+        return res.status(400).json({ error: 'Missing required parameters' });
+      }
+
+      // Find the campaign and verify it belongs to the user's connection (regardless of active status)
       const campaignRow = db.prepare(`
-        SELECT c.*, conn.business_name 
+        SELECT c.*, conn.business_name, conn.user_email as owner_email
         FROM meta_campaigns c 
         JOIN meta_connections conn ON c.connection_id = conn.id 
-        WHERE conn.user_email = ? AND c.id = ? AND conn.is_active = 1
-      `).get(user_email, campaign_id) as any;
+        WHERE c.id = ? OR c.meta_campaign_id = ?
+      `).get(campaign_id, campaign_id) as any;
 
-      if (!campaignRow) return res.status(404).json({ error: 'Campaign not found' });
+      if (!campaignRow) {
+        return res.status(404).json({ error: 'Campanha não encontrada no banco de dados' });
+      }
+
+      // Security check: ensure the campaign belongs to the user's email
+      if (campaignRow.owner_email !== user_email) {
+        return res.status(403).json({ error: 'Acesso negado para esta campanha' });
+      }
 
       const campaignData = JSON.parse(campaignRow.raw_data);
-      const systemPrompt = `Você é um gestor de tráfego de alta performance. Analise os detalhes desta campanha específica do Meta Ads (incluindo conjuntos de anúncios, criativos e métricas) e forneça insights técnicos acionáveis.
+      const systemPrompt = `Você é um gestor de tráfego de alta performance. Analise os detalhes desta campanha específica do Meta Ads e forneça insights técnicos acionáveis. SEJA PROFISSIONAL E TÉCNICO.
       
       RETORNE UM JSON NO FORMATO:
       {
         "score": number (0-100),
         "diagnosis": string,
-        "copy_analysis": string (analise os textos dos anúncios),
-        "targeting_analysis": string (analise os interesses e públicos),
-        "critical_fix": string (o que mudar agora),
-        "growth_opportunity": string (como escalar),
+        "copy_analysis": string,
+        "targeting_analysis": string,
+        "critical_fix": string,
+        "growth_opportunity": string,
         "next_steps": [string]
       }`;
 
       const response = await ai.models.generateContent({
-        model: "gemini-2.0-flash", // Use 2.0 or 1.5 based on availability/preference
+        model: "gemini-1.5-flash",
         contents: `Analise esta campanha do Meta Ads:\n${JSON.stringify({
           name: campaignData.name,
           objective: campaignData.objective,
@@ -620,7 +632,7 @@ async function startServer() {
       res.json(parsed);
     } catch (error) {
       console.error('Campaign specific analysis error:', error);
-      res.status(500).json({ error: 'Failed to analyze individual campaign' });
+      res.status(500).json({ error: 'Falha ao analisar a campanha individual' });
     }
   });
 

@@ -22,9 +22,10 @@ import { API_URL } from '../../config';
 
 interface MetaAdsDashboardProps {
   campaigns: any[];
+  userEmail: string;
 }
 
-const CampaignDetailAnalysis = ({ campaignId }: { campaignId: string }) => {
+const CampaignDetailAnalysis = ({ campaignId, userEmail }: { campaignId: string, userEmail: string }) => {
   const [loading, setLoading] = useState(false);
   const [analysis, setAnalysis] = useState<any>(null);
 
@@ -32,7 +33,6 @@ const CampaignDetailAnalysis = ({ campaignId }: { campaignId: string }) => {
     e.stopPropagation();
     setLoading(true);
     try {
-      const userEmail = localStorage.getItem('ascende_user_email');
       const response = await fetch(`${API_URL}/api/meta/campaign-analysis`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -115,7 +115,7 @@ const CampaignDetailAnalysis = ({ campaignId }: { campaignId: string }) => {
   );
 };
 
-const CampaignDetailOverlay = ({ campaign, onClose }: { campaign: any, onClose: () => void }) => {
+const CampaignDetailOverlay = ({ campaign, userEmail, onClose }: { campaign: any, userEmail: string, onClose: () => void }) => {
   const insights = campaign.raw_data?.insights || {};
 
   return (
@@ -158,7 +158,7 @@ const CampaignDetailOverlay = ({ campaign, onClose }: { campaign: any, onClose: 
 
           {/* AI Analysis Integration */}
           <div className="bg-gradient-to-br from-indigo-900/20 to-purple-900/10 rounded-[2rem] border border-indigo-500/20 p-8">
-            <CampaignDetailAnalysis campaignId={campaign.id} />
+            <CampaignDetailAnalysis campaignId={campaign.id} userEmail={userEmail} />
           </div>
 
           {/* Granular Creative View */}
@@ -210,7 +210,7 @@ const CampaignDetailOverlay = ({ campaign, onClose }: { campaign: any, onClose: 
   );
 };
 
-const MetaAdsDashboard: React.FC<MetaAdsDashboardProps> = ({ campaigns }) => {
+const MetaAdsDashboard: React.FC<MetaAdsDashboardProps> = ({ campaigns, userEmail }) => {
   const [period, setPeriod] = useState<'7d' | '15d' | '30d'>('30d');
   const [filter, setFilter] = useState<string>('all');
   const [expandedId, setExpandedId] = useState<string | null>(null);
@@ -426,7 +426,7 @@ const MetaAdsDashboard: React.FC<MetaAdsDashboardProps> = ({ campaigns }) => {
                       </div>
 
                       <div className="mt-8 pt-6 border-t border-zinc-100 dark:border-zinc-800">
-                        <CampaignDetailAnalysis campaignId={campaign.id} />
+                        <CampaignDetailAnalysis campaignId={campaign.id} userEmail={userEmail} />
                       </div>
                     </div>
                   )}
@@ -440,6 +440,7 @@ const MetaAdsDashboard: React.FC<MetaAdsDashboardProps> = ({ campaigns }) => {
       {selectedCampaign && (
         <CampaignDetailOverlay
           campaign={selectedCampaign}
+          userEmail={userEmail}
           onClose={() => setSelectedCampaignId(null)}
         />
       )}

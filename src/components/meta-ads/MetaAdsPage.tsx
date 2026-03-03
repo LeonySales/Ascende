@@ -229,7 +229,7 @@ export default function MetaAdsPage({ userEmail, onBack }: MetaAdsPageProps) {
           />
         )}
         {activeTab === 'dashboard' && (
-          <MetaAdsDashboard campaigns={campaigns} />
+          <MetaAdsDashboard campaigns={campaigns} userEmail={userEmail} />
         )}
         {activeTab === 'analysis' && (
           <MetaAdsAnalysis
