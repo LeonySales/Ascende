@@ -7,7 +7,8 @@ import {
   Target,
   AlertTriangle,
   Filter,
-  Download
+  Download,
+  Zap
 } from 'lucide-react';
 import { Button } from '../ui/Button';
 

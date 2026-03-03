@@ -519,9 +519,9 @@ async function startServer() {
       const campaignsResponse: AxiosResponse<MetaCampaignsResponse> = await axios.get(`https://graph.facebook.com/v18.0/act_${rawAccountId}/campaigns`, {
         params: {
           access_token: decryptedToken,
-          fields: 'id,name,status,objective,budget_remaining,start_time,stop_time,insights{spend,impressions,clicks,ctr,cpc,cpm,reach,frequency,actions},adsets{name,targeting,status,daily_budget,lifetime_budget,insights{spend,ctr,cpc,roas}},ads{name,status,adlabels,creative{name,body,title,image_url,thumbnail_url},insights{spend,ctr,cpc,roas}}',
+          fields: 'id,name,status,objective,budget_remaining,insights{spend,impressions,clicks,ctr,cpc,cpm,reach,frequency,actions},adsets{name,targeting,status,daily_budget,lifetime_budget,insights{spend,ctr,cpc}},ads{name,status,creative{id,name,body,title,thumbnail_url},insights{spend,ctr,cpc}}',
           date_preset: 'last_30d',
-          limit: 25
+          limit: 15
         }
       });
       const campaignsList = Array.isArray(campaignsResponse.data.data) ? campaignsResponse.data.data : [];
