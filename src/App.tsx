@@ -562,7 +562,7 @@ ${daysText}`;
       initial={{ opacity: 0, x: -20 }}
       animate={{ opacity: 1, x: 0 }}
       exit={{ opacity: 0, x: 20 }}
-      className="max-w-2xl mx-auto pt-12 space-y-8 px-6"
+      className="max-w-2xl mx-auto pt-8 md:pt-12 space-y-6 md:space-y-8 px-4 md:px-6"
     >
       <div className="space-y-2">
         <Button variant="ghost" onClick={() => setStep('home')} className="px-0 hover:bg-transparent -ml-1">
@@ -594,7 +594,7 @@ ${daysText}`;
       initial={{ opacity: 0, x: 20 }}
       animate={{ opacity: 1, x: 0 }}
       exit={{ opacity: 0, x: -20 }}
-      className="max-w-2xl mx-auto pt-12 space-y-8 px-6"
+      className="max-w-2xl mx-auto pt-8 md:pt-12 space-y-6 md:space-y-8 px-4 md:px-6"
     >
       <div className="space-y-2">
         <Button variant="ghost" onClick={() => setStep('input')} className="px-0 hover:bg-transparent -ml-1">
@@ -654,12 +654,12 @@ ${daysText}`;
             placeholder="Ex: R$ 500, Laptop, Trabalho sozinho"
           />
         </div>
+        <div className="md:col-span-2 pt-4">
+          <Button onClick={handleStartAnalysis} className="w-full py-4 text-lg" variant="secondary">
+            Gerar Plano de Monetização <Rocket className="w-5 h-5" />
+          </Button>
+        </div>
       </Card>
-      <div className="flex justify-end">
-        <Button onClick={handleStartAnalysis} className="w-full md:w-auto px-10" variant="secondary">
-          Gerar Plano de Monetização <Rocket className="w-5 h-5" />
-        </Button>
-      </div>
     </motion.div>
   );
 

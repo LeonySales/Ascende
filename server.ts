@@ -519,8 +519,9 @@ async function startServer() {
       const campaignsResponse: AxiosResponse<MetaCampaignsResponse> = await axios.get(`https://graph.facebook.com/v18.0/act_${rawAccountId}/campaigns`, {
         params: {
           access_token: decryptedToken,
-          fields: 'id,name,status,objective,budget_remaining,insights{spend,impressions,clicks,ctr,cpc,cpm,reach,frequency,actions}',
-          date_preset: 'last_30d'
+          fields: 'id,name,status,objective,budget_remaining,start_time,stop_time,insights{spend,impressions,clicks,ctr,cpc,cpm,reach,frequency,actions},adsets{name,targeting,status,daily_budget,lifetime_budget,insights{spend,ctr,cpc,roas}},ads{name,status,adlabels,creative{name,body,title,image_url,thumbnail_url},insights{spend,ctr,cpc,roas}}',
+          date_preset: 'last_30d',
+          limit: 25
         }
       });
       const campaignsList = Array.isArray(campaignsResponse.data.data) ? campaignsResponse.data.data : [];
@@ -574,6 +575,52 @@ async function startServer() {
     } catch (error) {
       console.error('Meta analysis error:', error);
       res.status(500).json({ error: 'Failed to analyze Meta campaigns' });
+    }
+  });
+
+  app.post("/api/meta/campaign-analysis", async (req, res) => {
+    const { user_email, campaign_id } = req.body;
+    try {
+      const campaignRow = db.prepare(`
+        SELECT c.*, conn.business_name 
+        FROM meta_campaigns c 
+        JOIN meta_connections conn ON c.connection_id = conn.id 
+        WHERE conn.user_email = ? AND c.meta_campaign_id = ? AND conn.is_active = 1
+      `).get(user_email, campaign_id) as any;
+
+      if (!campaignRow) return res.status(404).json({ error: 'Campaign not found' });
+
+      const campaignData = JSON.parse(campaignRow.raw_data);
+      const systemPrompt = `Você é um gestor de tráfego de alta performance. Analise os detalhes desta campanha específica do Meta Ads (incluindo conjuntos de anúncios, criativos e métricas) e forneça insights técnicos acionáveis.
+      
+      RETORNE UM JSON NO FORMATO:
+      {
+        "score": number (0-100),
+        "diagnosis": string,
+        "copy_analysis": string (analise os textos dos anúncios),
+        "targeting_analysis": string (analise os interesses e públicos),
+        "critical_fix": string (o que mudar agora),
+        "growth_opportunity": string (como escalar),
+        "next_steps": [string]
+      }`;
+
+      const response = await ai.models.generateContent({
+        model: "gemini-2.0-flash", // Use 2.0 or 1.5 based on availability/preference
+        contents: `Analise esta campanha do Meta Ads:\n${JSON.stringify({
+          name: campaignData.name,
+          objective: campaignData.objective,
+          insights: campaignData.insights,
+          adsets: campaignData.adsets?.data?.map((a: any) => ({ name: a.name, targeting: a.targeting, insights: a.insights })),
+          ads: campaignData.ads?.data?.map((a: any) => ({ name: a.name, creative: a.creative, insights: a.insights }))
+        }, null, 2)}`,
+        config: { systemInstruction: systemPrompt, responseMimeType: "application/json" }
+      });
+
+      const parsed = JSON.parse(response.text || "{}");
+      res.json(parsed);
+    } catch (error) {
+      console.error('Campaign specific analysis error:', error);
+      res.status(500).json({ error: 'Failed to analyze individual campaign' });
     }
   });
 

@@ -25,7 +25,7 @@
   html,
   body,
   #root {
-    @apply bg-[#050505] text-[#F0F0F0] min-h-screen transition-colors duration-500 selection:bg-indigo-500/30;
+    @apply bg-[#050505] text-[#F0F0F0] min-h-screen overflow-x-hidden transition-colors duration-500 selection:bg-indigo-500/30;
   }
 }
 

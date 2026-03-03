@@ -15,6 +15,97 @@ interface MetaAdsDashboardProps {
   campaigns: any[];
 }
 
+const CampaignDetailAnalysis = ({ campaignId }: { campaignId: string }) => {
+  const [loading, setLoading] = useState(false);
+  const [analysis, setAnalysis] = useState<any>(null);
+
+  const handleAnalyze = async (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setLoading(true);
+    try {
+      const userEmail = localStorage.getItem('ascende_user_email');
+      const response = await fetch(`${API_URL}/api/meta/campaign-analysis`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ user_email: userEmail, campaign_id: campaignId })
+      });
+      if (response.ok) {
+        setAnalysis(await response.json());
+      }
+    } catch (error) {
+      console.error('Single campaign analysis error:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (analysis) {
+    return (
+      <div className="space-y-6 pt-4">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <span className="text-[9px] font-bold text-indigo-400 uppercase tracking-widest">Análise de IA Concluída</span>
+            <div className="h-px w-8 bg-zinc-800" />
+          </div>
+          <div className="flex items-center gap-2">
+            <span className="text-lg font-black text-indigo-400">{analysis.score}</span>
+            <span className="text-[10px] text-zinc-500 font-bold uppercase tracking-widest">Score</span>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="space-y-4">
+            <div className="p-4 bg-indigo-500/5 rounded-2xl border border-indigo-500/10">
+              <p className="text-[10px] font-bold text-indigo-400 uppercase tracking-widest mb-2 flex items-center gap-2">
+                <Target className="w-3 h-3" /> Diagnóstico
+              </p>
+              <p className="text-xs text-zinc-300 leading-relaxed font-medium">{analysis.diagnosis}</p>
+            </div>
+
+            <div className="p-4 bg-zinc-900/50 rounded-2xl border border-white/5">
+              <p className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest mb-2">Análise de Copy</p>
+              <p className="text-xs text-zinc-400 leading-relaxed">{analysis.copy_analysis}</p>
+            </div>
+          </div>
+
+          <div className="space-y-6">
+            <div className="p-4 bg-rose-500/5 rounded-2xl border border-rose-500/10">
+              <p className="text-[10px] font-bold text-rose-400 uppercase tracking-widest mb-2 flex items-center gap-2">
+                <AlertTriangle className="w-3 h-3" /> Ajuste Crítico
+              </p>
+              <p className="text-xs text-zinc-300 leading-relaxed font-bold">{analysis.critical_fix}</p>
+            </div>
+
+            <div className="space-y-3">
+              <p className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest">Próximos Passos</p>
+              <div className="space-y-2">
+                {analysis.next_steps?.map((step: string, i: number) => (
+                  <div key={i} className="flex items-center gap-2 text-xs text-zinc-400">
+                    <div className="w-1 h-1 rounded-full bg-indigo-500" />
+                    <span>{step}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <Button
+      onClick={handleAnalyze}
+      loading={loading}
+      variant="secondary"
+      className="w-full py-3 text-xs flex items-center justify-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white font-bold"
+    >
+      <Zap className="w-4 h-4" />
+      Analisar Campanha com IA
+    </Button>
+  );
+};
+
 const MetaAdsDashboard: React.FC<MetaAdsDashboardProps> = ({ campaigns }) => {
   const [period, setPeriod] = useState<'7d' | '15d' | '30d'>('30d');
   const [filter, setFilter] = useState<string>('all');
@@ -113,10 +204,9 @@ const MetaAdsDashboard: React.FC<MetaAdsDashboardProps> = ({ campaigns }) => {
               return (
                 <div
                   key={campaign.id}
-                  onClick={() => setExpandedId(isExpanded ? null : campaign.id)}
                   className={`premium-card p-5 transition-all cursor-pointer ${isExpanded ? 'border-indigo-500 ring-1 ring-indigo-500/20' : ''}`}
                 >
-                  <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                  <div className="flex flex-col md:flex-row md:items-center justify-between gap-4" onClick={() => setExpandedId(isExpanded ? null : campaign.id)}>
                     <div className="flex-1">
                       <div className="flex items-center gap-3 mb-2">
                         <h5 className="font-bold text-zinc-900 dark:text-white truncate max-w-xs md:max-w-md">{campaign.name}</h5>
@@ -195,6 +285,42 @@ const MetaAdsDashboard: React.FC<MetaAdsDashboardProps> = ({ campaigns }) => {
                           </div>
                         </div>
                       )}
+
+                      <div className="mt-8 grid grid-cols-1 lg:grid-cols-2 gap-8">
+                        <div className="space-y-4">
+                          <h6 className="text-[10px] font-bold text-indigo-500 uppercase tracking-[0.2em]">Criativos e Textos</h6>
+                          <div className="space-y-3">
+                            {campaign.raw_data?.ads?.data?.slice(0, 2).map((ad: any, i: number) => (
+                              <div key={i} className="p-4 bg-zinc-900/40 rounded-2xl border border-white/5 space-y-2">
+                                <p className="text-xs font-bold text-white">{ad.name}</p>
+                                <p className="text-[11px] text-zinc-400 line-clamp-3 leading-relaxed">
+                                  {ad.creative?.body || ad.creative?.title || 'Sem texto disponível'}
+                                </p>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                        <div className="space-y-4">
+                          <h6 className="text-[10px] font-bold text-emerald-500 uppercase tracking-[0.2em]">Públicos e Interesses</h6>
+                          <div className="space-y-3">
+                            {campaign.raw_data?.adsets?.data?.slice(0, 2).map((adset: any, i: number) => (
+                              <div key={i} className="p-4 bg-zinc-900/40 rounded-2xl border border-white/5">
+                                <p className="text-xs font-bold text-white mb-1">{adset.name}</p>
+                                <div className="flex flex-wrap gap-1">
+                                  {adset.targeting?.flexible_spec?.[0]?.interests?.slice(0, 3).map((it: any, j: number) => (
+                                    <span key={j} className="text-[9px] bg-indigo-500/10 text-indigo-400 px-2 py-0.5 rounded-full">{it.name}</span>
+                                  ))}
+                                  {!adset.targeting?.flexible_spec?.[0]?.interests && <span className="text-[9px] text-zinc-500 italic">Público Aberto / Remarketing</span>}
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="mt-8 pt-6 border-t border-zinc-100 dark:border-zinc-800">
+                        <CampaignDetailAnalysis campaignId={campaign.id} />
+                      </div>
                     </div>
                   )}
                 </div>
@@ -203,7 +329,7 @@ const MetaAdsDashboard: React.FC<MetaAdsDashboardProps> = ({ campaigns }) => {
           </div>
         )}
       </div>
-    </div>
+    </div >
   );
 };
 
