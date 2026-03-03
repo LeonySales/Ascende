@@ -11,6 +11,7 @@ import {
   Zap
 } from 'lucide-react';
 import { Button } from '../ui/Button';
+import { API_URL } from '../../config';
 
 interface MetaAdsDashboardProps {
   campaigns: any[];
