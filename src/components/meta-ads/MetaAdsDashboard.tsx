@@ -4,12 +4,19 @@ import {
   DollarSign,
   Eye,
   MousePointerClick,
-  Target,
-  AlertTriangle,
   Filter,
   Download,
-  Zap
+  Zap,
+  X,
+  ExternalLink,
+  ChevronRight,
+  Target,
+  BarChart3,
+  Lightbulb,
+  CheckCircle2,
+  AlertTriangle
 } from 'lucide-react';
+import { motion } from 'motion/react';
 import { Button } from '../ui/Button';
 import { API_URL } from '../../config';
 
@@ -108,10 +115,108 @@ const CampaignDetailAnalysis = ({ campaignId }: { campaignId: string }) => {
   );
 };
 
+const CampaignDetailOverlay = ({ campaign, onClose }: { campaign: any, onClose: () => void }) => {
+  const insights = campaign.raw_data?.insights || {};
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, scale: 0.95 }}
+      animate={{ opacity: 1, scale: 1 }}
+      className="fixed inset-0 z-[60] flex items-center justify-center p-4 md:p-8"
+    >
+      <div className="absolute inset-0 bg-black/80 backdrop-blur-xl" onClick={onClose} />
+
+      <div className="relative w-full max-w-5xl bg-[#0a0a0a] border border-white/10 rounded-[2.5rem] shadow-2xl overflow-hidden max-h-[90vh] flex flex-col">
+        <div className="p-8 border-b border-white/5 flex justify-between items-start bg-indigo-500/5">
+          <div>
+            <div className="flex items-center gap-3 mb-2">
+              <span className="px-2 py-0.5 bg-indigo-500/20 text-indigo-400 text-[10px] font-bold rounded-lg uppercase tracking-widest">{campaign.objective}</span>
+              <span className="text-[10px] text-zinc-500 font-bold uppercase tracking-[0.2em]">{campaign.status}</span>
+            </div>
+            <h2 className="text-3xl font-black text-white tracking-tighter leading-tight">{campaign.name}</h2>
+          </div>
+          <button onClick={onClose} className="p-3 bg-zinc-900 rounded-full hover:bg-zinc-800 transition-colors border border-white/5">
+            <X className="w-5 h-5 text-zinc-400" />
+          </button>
+        </div>
+
+        <div className="flex-1 overflow-y-auto p-8 space-y-12">
+          {/* Main Stats */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+            {[
+              { label: 'Gasto Total', value: `R$ ${(parseFloat(insights.spend) || 0).toFixed(2)}`, trend: '+12%', color: 'text-white' },
+              { label: 'Cliques Únicos', value: (parseInt(insights.clicks) || 0).toLocaleString(), trend: '+5%', color: 'text-indigo-400' },
+              { label: 'CTR Médio', value: `${(parseFloat(insights.ctr) || 0).toFixed(2)}%`, trend: '-2%', color: 'text-emerald-400' },
+              { label: 'CPC Médio', value: `R$ ${(parseFloat(insights.cpc) || 0).toFixed(2)}`, trend: '+0.10', color: 'text-amber-400' },
+            ].map((stat, i) => (
+              <div key={i} className="p-6 bg-zinc-900/40 rounded-3xl border border-white/5 group hover:border-indigo-500/30 transition-all">
+                <p className="text-[10px] font-bold text-zinc-500 uppercase tracking-[0.2em] mb-2">{stat.label}</p>
+                <p className={`text-2xl font-black tracking-tighter ${stat.color}`}>{stat.value}</p>
+              </div>
+            ))}
+          </div>
+
+          {/* AI Analysis Integration */}
+          <div className="bg-gradient-to-br from-indigo-900/20 to-purple-900/10 rounded-[2rem] border border-indigo-500/20 p-8">
+            <CampaignDetailAnalysis campaignId={campaign.id} />
+          </div>
+
+          {/* Granular Creative View */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
+            <div className="space-y-6">
+              <h3 className="text-lg font-bold text-white flex items-center gap-2">
+                <Target className="w-5 h-5 text-indigo-400" /> Segmentação Ativa
+              </h3>
+              <div className="space-y-4">
+                {campaign.raw_data?.adsets?.data?.map((adset: any, i: number) => (
+                  <div key={i} className="p-6 bg-zinc-900/60 rounded-3xl border border-white/5">
+                    <div className="flex justify-between items-start mb-4">
+                      <p className="font-bold text-sm text-white">{adset.name}</p>
+                      <span className="text-[10px] font-black text-indigo-500 bg-indigo-500/10 px-2 py-0.5 rounded-full uppercase tracking-widest">R$ {parseFloat(adset.daily_budget || adset.lifetime_budget || '0').toFixed(2)}/dia</span>
+                    </div>
+                    <div className="flex flex-wrap gap-2">
+                      {adset.targeting?.flexible_spec?.[0]?.interests?.map((it: any, j: number) => (
+                        <span key={j} className="px-3 py-1 bg-zinc-800 text-[11px] text-zinc-300 rounded-xl border border-white/5">{it.name}</span>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="space-y-6">
+              <h3 className="text-lg font-bold text-white flex items-center gap-2">
+                <Sparkles className="w-5 h-5 text-amber-400" /> Criativos de Performance
+              </h3>
+              <div className="space-y-4">
+                {campaign.raw_data?.ads?.data?.map((ad: any, i: number) => (
+                  <div key={i} className="p-6 bg-zinc-900/60 rounded-3xl border border-white/5">
+                    <p className="font-bold text-sm text-white mb-2">{ad.name}</p>
+                    <p className="text-xs text-zinc-400 leading-relaxed italic border-l-2 border-indigo-500/50 pl-4 py-2 bg-indigo-500/5 rounded-r-xl">
+                      "{ad.creative?.body || ad.creative?.title || 'Texto não encontrado'}"
+                    </p>
+                    <div className="mt-4 flex gap-4 text-[10px] font-bold text-zinc-500 uppercase">
+                      <span>CTR: {(parseFloat(ad.insights?.ctr) || 0).toFixed(2)}%</span>
+                      <span>Gastos: R$ {(parseFloat(ad.insights?.spend) || 0).toFixed(2)}</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </motion.div>
+  );
+};
+
 const MetaAdsDashboard: React.FC<MetaAdsDashboardProps> = ({ campaigns }) => {
   const [period, setPeriod] = useState<'7d' | '15d' | '30d'>('30d');
   const [filter, setFilter] = useState<string>('all');
   const [expandedId, setExpandedId] = useState<string | null>(null);
+  const [selectedCampaignId, setSelectedCampaignId] = useState<string | null>(null);
+
+  const selectedCampaign = campaigns.find(c => c.id === selectedCampaignId);
 
   // Calculate summary metrics
   const totalSpent = campaigns.reduce((sum, camp) => {
@@ -210,7 +315,7 @@ const MetaAdsDashboard: React.FC<MetaAdsDashboardProps> = ({ campaigns }) => {
                 >
                   <div className="flex flex-col md:flex-row md:items-center justify-between gap-4" onClick={() => setExpandedId(isExpanded ? null : campaign.id)}>
                     <div className="flex-1">
-                      <div className="flex items-center gap-3 mb-2">
+                      <div className="flex items-center gap-3 mb-2" onClick={() => setExpandedId(isExpanded ? null : campaign.id)}>
                         <h5 className="font-bold text-zinc-900 dark:text-white truncate max-w-xs md:max-w-md">{campaign.name}</h5>
                         <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider ${statusColor}`}>
                           {campaign.status}
@@ -218,13 +323,13 @@ const MetaAdsDashboard: React.FC<MetaAdsDashboardProps> = ({ campaigns }) => {
                       </div>
 
                       <div className="flex flex-wrap gap-4 text-xs">
+                        <div onClick={() => setSelectedCampaignId(campaign.id)} className="flex items-center gap-1.5 text-indigo-500 font-bold hover:underline cursor-pointer group">
+                          Ver Detalhes <ExternalLink className="w-3 h-3 group-hover:translate-x-0.5 transition-transform" />
+                        </div>
+                        <div className="text-zinc-500">|</div>
                         <div>
                           <span className="text-zinc-500 dark:text-zinc-400">Objetivo:</span>{' '}
                           <span className="font-bold text-zinc-800 dark:text-zinc-200 uppercase">{campaign.objective}</span>
-                        </div>
-                        <div>
-                          <span className="text-zinc-500 dark:text-zinc-400">Orçamento:</span>{' '}
-                          <span className="font-bold text-zinc-800 dark:text-zinc-200">R$ {campaign.budget_remaining?.toFixed(2) || '0.00'}</span>
                         </div>
                       </div>
                     </div>
@@ -331,7 +436,14 @@ const MetaAdsDashboard: React.FC<MetaAdsDashboardProps> = ({ campaigns }) => {
           </div>
         )}
       </div>
-    </div >
+
+      {selectedCampaign && (
+        <CampaignDetailOverlay
+          campaign={selectedCampaign}
+          onClose={() => setSelectedCampaignId(null)}
+        />
+      )}
+    </div>
   );
 };
 

@@ -585,7 +585,7 @@ async function startServer() {
         SELECT c.*, conn.business_name 
         FROM meta_campaigns c 
         JOIN meta_connections conn ON c.connection_id = conn.id 
-        WHERE conn.user_email = ? AND c.meta_campaign_id = ? AND conn.is_active = 1
+        WHERE conn.user_email = ? AND c.id = ? AND conn.is_active = 1
       `).get(user_email, campaign_id) as any;
 
       if (!campaignRow) return res.status(404).json({ error: 'Campaign not found' });
