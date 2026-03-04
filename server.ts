@@ -350,7 +350,7 @@ async function startServer() {
       ? process.env.APP_URL.replace(/^https?:\/\//, '')
       : req.get('host');
     const redirectUri = encodeURIComponent(`${protocol}://${host}/api/auth/meta/callback`);
-    const authUrl = `https://www.facebook.com/v18.0/dialog/oauth?client_id=${process.env.META_APP_ID}&redirect_uri=${redirectUri}&scope=public_profile,ads_read,ads_management,business_management&response_type=code&state=${encodeURIComponent(user_email as string || '')}`;
+    const authUrl = `https://www.facebook.com/v18.0/dialog/oauth?client_id=${process.env.META_APP_ID}&redirect_uri=${redirectUri}&scope=public_profile,ads_read&response_type=code&state=${encodeURIComponent(user_email as string || '')}`;
 
     // 🔍 DEBUG - aparece no terminal do servidor
     console.log('=== META AUTH DEBUG ===');
@@ -625,17 +625,21 @@ async function startServer() {
         config: { systemInstruction: systemPrompt, responseMimeType: "application/json" }
       });
 
-      if (!response.text) {
+      let responseText = response.text || "";
+      if (!responseText) {
         console.error('Empty AI response from Gemini');
         return res.status(500).json({ error: 'Falha no serviço de IA: Resposta vazia' });
       }
 
+      // Handle cases where model returns markdown blocks
+      const cleanJson = responseText.replace(/```json\n?|\n?```/g, '').trim();
+
       try {
-        const parsed = JSON.parse(response.text);
+        const parsed = JSON.parse(cleanJson);
         res.json(parsed);
       } catch (e) {
-        console.error('Failed to parse AI JSON:', response.text);
-        res.status(500).json({ error: 'Erro ao processar resposta da IA' });
+        console.error('Failed to parse AI JSON:', responseText);
+        res.status(500).json({ error: 'Erro ao processar resposta da IA: Formato inválido' });
       }
     } catch (error: any) {
       console.error('Campaign specific analysis error:', error.message || error);

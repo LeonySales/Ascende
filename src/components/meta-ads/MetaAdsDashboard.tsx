@@ -188,7 +188,7 @@ const CampaignDetailOverlay = ({ campaign, userEmail, onClose }: { campaign: any
 
             <div className="space-y-6">
               <h3 className="text-lg font-bold text-white flex items-center gap-2">
-                <Sparkles className="w-5 h-5 text-amber-400" /> Criativos de Performance
+                <Zap className="w-5 h-5 text-amber-400" /> Criativos de Performance
               </h3>
               <div className="space-y-4">
                 {campaign.raw_data?.ads?.data?.map((ad: any, i: number) => (

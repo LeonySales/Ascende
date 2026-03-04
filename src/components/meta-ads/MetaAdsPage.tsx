@@ -27,6 +27,7 @@ export default function MetaAdsPage({ userEmail, onBack }: MetaAdsPageProps) {
   const [analysis, setAnalysis] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [syncing, setSyncing] = useState(false);
+  const [errorStatus, setErrorStatus] = useState<string | null>(null);
 
   useEffect(() => {
     if (userEmail) {
@@ -47,6 +48,7 @@ export default function MetaAdsPage({ userEmail, onBack }: MetaAdsPageProps) {
     }
     if (params.get('meta_error')) {
       console.error('Meta connection error:', params.get('meta_error'));
+      setErrorStatus(params.get('meta_error'));
       window.history.replaceState({}, '', window.location.pathname);
     }
   }, []);
@@ -76,7 +78,7 @@ export default function MetaAdsPage({ userEmail, onBack }: MetaAdsPageProps) {
       fetchCampaigns(selectedAccountId);
       if (activeTab === 'analysis') fetchAnalysis(selectedAccountId);
     }
-  }, [selectedAccountId]);
+  }, [selectedAccountId, activeTab]);
 
   const fetchCampaigns = async (adAccountId?: string) => {
     try {
@@ -225,7 +227,11 @@ export default function MetaAdsPage({ userEmail, onBack }: MetaAdsPageProps) {
         {activeTab === 'connection' && (
           <MetaAdsConnection
             userEmail={userEmail}
-            onConnectionChange={fetchConnectionStatus}
+            error={errorStatus}
+            onConnectionChange={() => {
+              setErrorStatus(null);
+              fetchConnectionStatus();
+            }}
           />
         )}
         {activeTab === 'dashboard' && (

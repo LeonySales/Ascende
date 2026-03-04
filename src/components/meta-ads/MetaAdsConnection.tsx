@@ -12,10 +12,11 @@ import {
 
 interface MetaAdsConnectionProps {
   userEmail: string;
+  error?: string | null;
   onConnectionChange?: () => void;
 }
 
-const MetaAdsConnection: React.FC<MetaAdsConnectionProps> = ({ userEmail, onConnectionChange }) => {
+const MetaAdsConnection: React.FC<MetaAdsConnectionProps> = ({ userEmail, error, onConnectionChange }) => {
   const { status, loading, reconnect } = useMetaConnection(userEmail);
   const [syncing, setSyncing] = useState(false);
 
@@ -71,6 +72,17 @@ const MetaAdsConnection: React.FC<MetaAdsConnectionProps> = ({ userEmail, onConn
           <RefreshCw className={`w-4 h-4 text-zinc-400 ${loading ? 'animate-spin' : ''}`} />
         </button>
       </div>
+
+      {error && (
+        <div className="p-4 mb-4 bg-rose-500/10 border border-rose-500/20 rounded-2xl text-rose-500 text-sm flex items-center gap-3">
+          <AlertTriangle className="w-5 h-5" />
+          <span>
+            {error === 'access_denied'
+              ? 'Permissão negada. Você precisa autorizar o acesso no Facebook para conectar.'
+              : `Erro na conexão: ${error}`}
+          </span>
+        </div>
+      )}
 
       {!status.isConnected ? (
         <div className="p-6 bg-zinc-50 dark:bg-zinc-900/50 rounded-2xl border border-zinc-200 dark:border-zinc-800">

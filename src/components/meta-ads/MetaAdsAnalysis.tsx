@@ -76,7 +76,7 @@ const MetaAdsAnalysis: React.FC<MetaAdsAnalysisProps> = ({
         <h3 className="text-xl font-bold text-zinc-900 dark:text-white">Análise por IA</h3>
         <div className="flex gap-3">
           <Button onClick={handleGenerateAnalysis} variant="secondary" className="flex items-center gap-2" loading={isGenerating}>
-            <Sparkles className="w-4 h-4" />
+            <Zap className="w-4 h-4" />
             Gerar Nova Análise
           </Button>
           <Button onClick={onRefresh} variant="outline" className="flex items-center gap-2" loading={loading}>
