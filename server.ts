@@ -344,22 +344,23 @@ async function startServer() {
   // ✅ Meta Ads OAuth - COM DEBUG
   app.get("/api/auth/meta", (req, res) => {
     const { user_email } = req.query;
-    const protocol = req.headers['x-forwarded-proto'] || req.protocol;
-    const isLocalhost = req.get('host')?.includes('localhost');
+    const isLocalhost = req.get('host')?.includes('localhost') || req.get('host')?.includes('127.0.0.1');
+    const protocol = (req.headers['x-forwarded-proto'] === 'https' || !isLocalhost) ? 'https' : 'http';
     const host = (process.env.APP_URL && !isLocalhost)
       ? process.env.APP_URL.replace(/^https?:\/\//, '')
       : req.get('host');
-    const redirectUri = encodeURIComponent(`${protocol}://${host}/api/auth/meta/callback`);
-    const authUrl = `https://www.facebook.com/v18.0/dialog/oauth?client_id=${process.env.META_APP_ID}&redirect_uri=${redirectUri}&scope=public_profile,ads_read&response_type=code&state=${encodeURIComponent(user_email as string || '')}`;
 
-    // 🔍 DEBUG - aparece no terminal do servidor
-    console.log('=== META AUTH DEBUG ===');
-    console.log('META_APP_ID:', process.env.META_APP_ID);
-    console.log('META_APP_SECRET exists:', !!process.env.META_APP_SECRET);
-    console.log('user_email:', user_email);
-    console.log('redirectUri (decoded):', decodeURIComponent(redirectUri));
-    console.log('Full Auth URL:', authUrl);
-    console.log('======================');
+    // Ensure the redirect URI uses HTTPS in production
+    const redirectUri = encodeURIComponent(`${protocol}://${host}/api/auth/meta/callback`);
+
+    // auth_type=rerequest forces the permission dialog even if previously denied
+    const authUrl = `https://www.facebook.com/v18.0/dialog/oauth?client_id=${process.env.META_APP_ID}&redirect_uri=${redirectUri}&scope=public_profile,ads_read&response_type=code&state=${encodeURIComponent(user_email as string || '')}&auth_type=rerequest`;
+
+    // 🔍 DEBUG
+    console.log('=== META AUTH REDIRECT ===');
+    console.log('Protocol:', protocol);
+    console.log('Redirect URI:', decodeURIComponent(redirectUri));
+    console.log('==========================');
 
     res.redirect(authUrl);
   });
